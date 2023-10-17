@@ -1,0 +1,260 @@
+#main-menu {
+	position: fixed;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	z-index: 100;
+	transition: background 0.3s ease, opacity 0.5s;
+	background: #111;
+}
+
+#main-menu #notification {
+	position: absolute;
+	top: 0;
+	right: 0;
+	margin: 10px;
+	padding: 10px;
+	border: black 2px solid;
+	border-radius: 10px;
+	background: rgba(0, 0, 0, 0.7);
+	color: lightgreen;
+	font-weight: 700;
+	opacity: 0;
+	transition: opacity 0.3s ease;
+}
+
+#main-menu #loading {
+	position: absolute;
+	bottom: 0;
+	right: 0;
+	display: flex;
+	gap: 12px;
+	padding: 10px;
+	opacity: 0;
+	transition: opacity 1s;
+}
+
+#main-menu #loading img {
+	animation: loading 2s infinite;
+	width: 40px;
+	height: 40px;
+	image-rendering: auto;
+}
+
+#main-menu #loading img:nth-child(2) {
+	animation-delay: 100ms;
+}
+
+#main-menu #loading img:nth-child(3) {
+	animation-delay: 200ms;
+}
+
+#main-menu #container {
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+	background: radial-gradient(circle at center, rgba(0, 0, 100, 0.7), rgba(0, 0, 50, 0.7));
+	opacity: 1;
+	transition: opacity 1s;
+}
+
+#main-menu #rooms {
+	position: relative;
+	width: fit-content;
+	left: 50%;
+	top: 40%;
+	transform: translate(-50%, -50%);
+	z-index: 2;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 10px;
+	opacity: 0;
+	pointer-events: none;
+	padding: 20px;
+	transition: opacity 0.5s;
+}
+
+#main-menu #back {
+	position: fixed;
+	top: 10px;
+	left: 10px;
+	background: rgba(0, 0, 0, 0.7);
+	border: black 2px solid;
+	outline: none;
+	padding: 10px;
+	border-radius: 10px;
+	font-family: pixel;
+	font-size: 10px;
+	letter-spacing: 1px;
+	cursor: pointer;
+	color: white;
+	transition: border 0.3s ease, background 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+#main-menu #rooms-container {
+	display: flex;
+	gap: 10px;
+	justify-content: center;
+	align-items: center;
+}
+
+#main-menu #room-list {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 10px;
+	width: 100%;
+	max-height: calc(52%);
+	overflow-y: scroll;
+	color: white;
+	font-family: pixel;
+	font-size: 25px;
+	letter-spacing: 1px;
+	scroll-behavior: smooth;
+}
+
+#main-menu #room {
+	background: rgba(0, 0, 0, 0.7);
+	border: black 2px solid;
+	padding: 10px;
+	border-radius: 10px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 10px;
+	width: calc(100% - 24px);
+}
+
+#main-menu #room-info {
+	color: white;
+	font-family: pixel;
+	letter-spacing: 1px;
+	display: flex;
+	width: 100%;
+	flex-direction: column;
+}
+
+#main-menu #room-name {
+	font-size: 20px;
+}
+
+#main-menu #room-id {
+	font-size: 15px;
+	color: gray;
+}
+
+#main-menu hr {
+	border: none;
+	height: 2px;
+	border-radius: 2px;
+	background: rgb(0, 0, 100);
+	margin-bottom: 5px;
+}
+
+#main-menu #join-room {
+	background: green;
+	border: none;
+	outline: none;
+	padding: 10px;
+	border-radius: 10px;
+	font-family: pixel;
+	font-size: 20px;
+	letter-spacing: 1px;
+	cursor: pointer;
+	color: white;
+	height: fit-content;
+	transition: border 0.3s ease, background 0.3s ease, transform 0.3s ease;
+}
+
+#main-menu #private-room {
+	background: rgba(0, 0, 0, 0.7);
+	border: black 2px solid;
+	border-radius: 10px;
+	display: flex;
+	gap: 10px;
+	padding: 10px;
+}
+
+#main-menu #private-input {
+	background: rgba(0, 0, 0, 0.7);
+	outline: none;
+	border: rgb(0, 0, 100) 2px solid;
+	border-radius: 10px;
+	color: white;
+	padding: 10px;
+	transition: background 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+#main-menu #private-input:focus {
+	transform: translateY(-2px);
+	background: rgba(0, 0, 50, 0.7);
+	border: rgb(0, 0, 100) 2px solid;
+	box-shadow: 0 4px 10px rgb(0, 0, 100);
+}
+
+#main-menu #side-container {
+	position: fixed;
+	width: fit-content;
+	left: 50%;
+	top: 40%;
+	z-index: 2;
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+	padding: 20px;
+	transform: translate(-50%, -50%);
+	transition: opacity 0.5s;
+}
+
+#main-menu #game-title {
+	width: fit-content;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 20px;
+	padding: 10px;
+}
+
+#main-menu #game-text {
+	color: white;
+	font-family: pixel;
+	font-size: 50px;
+	margin-top: 20px;
+}
+
+#main-menu #game-icon {
+	width: 150px;
+	height: 150px;
+}
+
+#main-menu #play {
+	background: rgba(0, 0, 0, 0.7);
+	border: black 2px solid;
+	outline: none;
+	padding: 10px;
+	border-radius: 10px;
+	font-family: pixel;
+	font-size: 30px;
+	letter-spacing: 1px;
+	cursor: pointer;
+	color: white;
+	transition: border 0.3s ease, background 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+@keyframes loading {
+	0%, 100% {
+		transform: rotate(-5deg) scale(1);
+	}
+	25% {
+		transform: scale(1.2);
+	}
+	50% {
+		transform: rotate(5deg) scale(1);
+	}
+	75% {
+		transform: scale(1.2);
+	}
+}

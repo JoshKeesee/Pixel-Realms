@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Pixelwood - Create Account</title>
+	<link rel="icon" href="icon.png">
+	<link rel="stylesheet" href="css/login.css">
+</head>
+
+<body>
+	<div id="main-container"></div>
+	<div id="container">
+		<h1>Create Account</h1>
+		<form id="create-account" method="post" action="/" autocomplete="off">
+			<input type="text" name="name" placeholder="Name" maxlength="20" required autofocus onfocus="updateSelected(0, '0')">
+			<input type="text" name="username" placeholder="Username" maxlength="20" required onfocus="updateSelected(0, '1')">
+			<input type="text" name="email" placeholder="Email" required type="email" onfocus="updateSelected(0, '2')">
+			<input type="password" name="password" placeholder="Password" required type="password" onfocus="updateSelected(0, '3')">
+			<div class="profile-container">
+				<label for="profile" class="profile-upload" onmouseover="updateSelected(0, '4')" onfocus="updateSelected(0, '4')">
+					<input name="profile" id="profile" type="file" accept="image/*" required>
+					Upload Profile
+				</label>
+				<img id="profile-display" width="100" height="100">
+			</div>
+			<input type="submit" id="submit" value="Create Account" onmouseover="updateSelected(0, '5')" onfocus="updateSelected(0, '5')">
+		</form>
+		<div id="error"></div>
+		<hr>
+		<div>Have an account already? <a onmouseover="updateSelected(0, '6')" onfocus="updateSelected(0, '6')">Log in!</a></div>
+	</div>
+
+	<script src="js/game/gamepad.js"></script>
+	<script src="js/game/particles.js"></script>
+	<script>
+		const serverUrl = window.location.search.split("=")[1];
+		document.querySelector("a").href = "login.html?server=" + serverUrl;
+		const form = document.getElementById("create-account");
+		const error = document.getElementById("error");
+		const submit = document.getElementById("submit");
+		const profile = document.getElementById("profile");
+		const profileDisplay = document.getElementById("profile-display");
+		particles.removeAll();
+		particles.addTo(document.querySelector("#main-container"));
+		particles.add(100);
+		let curr = 0, max = 7, players = {}, readyToAnimate, myId;
+		profile.addEventListener("change", e => {
+			const fr = new FileReader();
+			fr.onload = () => profileDisplay.src = fr.result;
+			fr.readAsDataURL(e.target.files[0]);
+		});
+		form.addEventListener("submit", async e => {
+			e.preventDefault();
+			if (curr == 4) return;
+			submit.disabled = true;
+			const body = new FormData(form);
+			const user = await (await fetch(serverUrl + "signup", {
+				method: "post",
+				body,
+			})).json();
+			submit.disabled = false;
+			if (user.error) return error.innerText = user.error;
+			submit.disabled = true;
+			window.opener.postMessage(user, "*");
+			window.close();
+		});
+		function updateSelected(val, set) {
+			form.getElementsByTagName("input")[curr]?.blur();
+			curr += val;
+			if (set) curr = Number(set);
+			if (curr < 0) curr = 0;
+			if (curr >= max) curr = max - 1;
+			if (curr == 6) document.querySelector("a").focus();
+			else if (curr == 4) form.getElementsByTagName("label")[0].classList.add("hover");
+			else {
+				document.querySelector("a").blur();
+				form.getElementsByTagName("label")[0].classList.remove("hover");
+				form.getElementsByTagName("input")[curr].focus();
+			}
+		}
+		function animate() {
+			requestAnimationFrame(animate);
+			particles.animate(ptc);
+			if (gp.connected) gp.updateGamepad();
+		}
+		function keydown(e) {
+			const k = e.key;
+			if ((k == "Enter" || gp.enter()) && curr != 4 && curr != max - 1) updateSelected(0, (max - 2).toString());
+			else if ((k == "Enter" || gp.enter()) && curr != max - 1) form.getElementsByTagName("label")[0].click();
+		}
+		function keyup(e) {
+			const k = e.key;
+			if (k == "ArrowDown" || gp.down(true)) updateSelected(1);
+			if (k == "ArrowUp" || gp.up(true)) updateSelected(-1);
+		}
+		document.addEventListener("keyup", keyup, false);
+		document.addEventListener("keydown", keydown, false);
+		animate();
+	</script>
+</body>

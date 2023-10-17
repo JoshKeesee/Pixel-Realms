@@ -1,0 +1,109 @@
+#wardrobe {
+  background: slategray;
+  position: fixed;
+  top: 100px;
+  bottom: 100px;
+  left: 10%;
+  right: 10%;
+  border: 10px solid darkslategray;
+  border-radius: 50px;
+  padding: 5px;
+  opacity: 0;
+  color: white;
+  font-family: pixel;
+  font-size: 40px;
+  text-align: center;
+  transition: opacity 200ms;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+#wardrobe #container {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+  height: 90%;
+	gap: 80px;
+}
+
+#wardrobe #inner-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+#wardrobe #column {
+  display: flex;
+  width: 100%;
+  gap: 10px;
+  align-items: center;
+  justify-content: center;
+}
+
+#wardrobe #box, #wardrobe #armor {
+  width: 50px;
+  height: 50px;
+  outline: lightgray 3px solid;
+}
+
+#wardrobe #box div, #wardrobe #armor div {
+  width: 50px;
+  height: 50px;
+  background-size: auto 50px;
+}
+
+#wardrobe #box:hover, #wardrobe #armor:hover {
+  background: darkslategray;
+}
+
+#wardrobe .left {
+  border-left: 16px solid transparent;
+  border-right: 16px solid white;
+}
+
+#wardrobe .right {
+  border-left: 16px solid white;
+  border-right: 16px solid transparent;
+}
+
+#wardrobe #arrow {
+  border-top: 16px solid transparent;
+  border-bottom: 16px solid transparent;
+  width: 0;
+  height: 0;
+  cursor: pointer;
+}
+
+#wardrobe #arrow:hover {
+  transform: translateY(-2px);
+}
+
+#wardrobe #output {
+	width: 80px;
+	height: 80px;
+	border: lightgray 3px solid;
+  position: relative;
+}
+
+#wardrobe #output div {
+	width: 80px;
+	height: 80px;
+  background-size: auto 80px;
+  position: absolute;
+  top: 0;
+}
+
+#wardrobe #output div:nth-child(2) {
+  background: url("../images/characters/armor/leg-armor.png");
+}
+
+#wardrobe #output div:nth-child(4) {
+  background: url("../images/characters/armor/body-armor.png");
+}
+
+#wardrobe #output div:nth-child(6) {
+  background: url("../images/characters/armor/head-armor.png");
+}

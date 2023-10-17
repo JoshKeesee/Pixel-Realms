@@ -1,0 +1,151 @@
+body {
+	background: black;
+}
+
+#main-container {
+	position: fixed;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	background: radial-gradient(circle at center, rgba(0, 0, 100, 0.7), rgba(0, 0, 50, 0.7));
+}
+
+#container {
+	background: rgba(0, 0, 0, 0.7);
+	border: 2px solid black;
+	border-radius: 10px;
+	padding: 15px;
+	font-family: pixel;
+	letter-spacing: 2px;
+	text-align: center;
+	color: white;
+	font-size: 20px;
+	font-weight: 700;
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	min-width: 80%;
+	min-height: 80%;
+	cursor: default;
+	user-select: none;
+}
+
+form {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+}
+
+a {
+	color: rgb(0, 0, 255);
+	text-align: center;
+	text-decoration: none;
+	outline: none;
+	transition: color 0.3s ease;
+}
+
+a:focus {
+	color: rgb(100, 100, 255);
+}
+
+hr {
+	margin-top: 20px;
+	margin-bottom: 20px;
+	background: white;
+	border-radius: 4px;
+	height: 4px;
+}
+
+input[type="text"], input[type="password"] {
+	background: rgba(0, 0, 0, 0.7);
+	border: 2px solid rgb(0, 0, 100);
+	border-radius: 10px;
+	padding: 10px;
+	color: white;
+	outline: none;
+	cursor: text;
+	transition: background 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+input[type="text"]:focus, input[type="password"]:focus {
+	background: rgba(0, 0, 50, 0.7);
+	box-shadow: 0 4px 10px rgb(0, 0, 50);
+	transform: translateY(-2px);
+}
+
+#submit, .profile-upload {
+	background: rgba(0, 0, 0, 0.7);
+	border: 2px solid black;
+	border-radius: 10px;
+	padding: 10px;
+	width: fit-content;
+	color: white;
+	cursor: pointer;
+	font-family: pixel;
+	font-size: 20px;
+	font-weight: 700;
+	letter-spacing: 2px;
+	transition: background 0.3s ease, transform 0.3s ease, border 0.3s ease, box-shadow 0.3s ease;
+	outline: none;
+}
+
+#submit {
+	margin-left: auto;
+}
+
+#submit:focus, .hover {
+	background: rgba(0, 0, 50, 0.7);
+	border: 2px solid rgb(0, 0, 100);
+	transform: translateY(-2px);
+	box-shadow: 0 4px 10px rgb(0, 0, 50);
+}
+
+#submit:disabled {
+	background: rgba(0, 0, 25, 0.7);
+	border: 2px solid rgb(0, 0, 50);
+}
+
+#error {
+	margin-top: 10px;
+	color: rgb(195, 15, 15);
+}
+
+input[type="file"] {
+	display: none;
+}
+
+img {
+	background: rgba(0, 0, 0, 0.7);
+	border: 2px solid rgb(0, 50, 130);
+	border-radius: 10px;
+	color: white;
+	outline: none;
+	display: none;
+}
+
+img[src] {
+	display: block;
+}
+
+.profile-container {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 10px;
+}
+
+#ptc {
+	position: fixed;
+	top: 0;
+	left: 0;
+	pointer-events: none;
+	z-index: 999;
+}
+
+@font-face {
+	font-family: pixel;
+	src: url("../pixel.woff2");
+	font-display: swap;
+}

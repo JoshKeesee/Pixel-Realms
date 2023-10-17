@@ -1,0 +1,62 @@
+{
+  "name": "pixelwood",
+  "author": "Joshua Keesee <joshuakeesee1@gmail.com>",
+  "version": "0.6.0",
+  "description": "An online RPG game where you can connect with friends and battle monsters to take back the kingdom of Pixelwood!",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "make": "electron-builder -mwl",
+    "make-win": "electron-builder -w",
+    "make-linux": "electron-builder -l",
+    "make-mac": "electron-builder -m",
+    "release": "electron-builder"
+  },
+  "build": {
+    "productName": "Pixelwood",
+    "appId": "com.pixelwood.app",
+    "artifactName": "${productName}.${ext}",
+    "directories": {
+      "buildResources": "."
+    },
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "JoshKeesee",
+        "repo": "Pixelwood",
+        "private": true,
+        "releaseType": "release"
+      }
+    ],
+    "mac": {
+      "category": "public.app-category.games",
+      "target": "dmg"
+    },
+    "win": {
+      "target": "nsis",
+      "publish": [
+        "github"
+      ]
+    },
+    "linux": {
+      "target": "deb"
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JoshKeesee/Pixelwood.git"
+  },
+  "keywords": [],
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/JoshKeesee/Pixelwood/issues"
+  },
+  "homepage": "https://github.com/JoshKeesee/Pixelwood#readme",
+  "devDependencies": {
+    "electron": "^25.2.0",
+    "electron-builder": "^24.6.4"
+  },
+  "dependencies": {
+    "electron-updater": "^6.1.4"
+  }
+}

@@ -1,0 +1,192 @@
+#workbench {
+  background: slategray;
+  position: fixed;
+  top: 100px;
+  bottom: 100px;
+  left: 10%;
+  right: 10%;
+  border: 10px solid darkslategray;
+  border-radius: 50px;
+  padding: 5px;
+  opacity: 0;
+  color: white;
+  font-family: pixel;
+  font-size: 40px;
+  text-align: center;
+  transition: opacity 200ms;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+#workbench #container {
+  display: flex;
+  gap: 100px;
+  height: 90%;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+#workbench #recipes {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: slategray;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 200ms;
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  gap: 10px;
+}
+
+#workbench #recipe-results-container {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  position: relative;
+}
+
+#workbench #recipe-results {
+  display: grid;
+  grid-template-columns: 50px 50px 50px 50px 50px 50px 50px 50px;
+  gap: 10px;
+  width: calc((50px * 8) + (10px * 8));
+  height: auto;
+  overflow-y: auto;
+}
+
+#workbench #recipe-preview-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  font-size: 15px;
+  align-items: center;
+  justify-content: center;
+}
+
+#workbench #recipe-preview {
+  display: grid;
+  grid-template-columns: 50px 50px 50px;
+  gap: 10px;
+}
+
+#workbench #back {
+  padding: 10px;
+  border: 2px solid black;
+  background: rgba(0, 0, 0, 0.7);
+  border-radius: 10px;
+  font-size: 15px;
+  position: absolute;
+  top: 0;
+  left: 10px;
+  cursor: pointer;
+  transition: transform 0.3s ease, border 0.3s ease, background 0.3s ease, box-shadow 0.3s ease;
+}
+
+#workbench #back:hover {
+  background: rgba(0, 0, 50, 0.7);
+  border: 2px solid rgb(0, 0, 100);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0, 0, 100);
+}
+
+#workbench #recipe-search {
+  padding: 10px;
+  border: rgb(0, 0, 100) solid 2px;
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.7);
+  transition: background 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+  outline: none;
+  color: white;
+  box-shadow: none;
+}
+
+#workbench #recipe-search:focus {
+  background: rgba(0, 0, 50, 0.7);
+  box-shadow: 0 4px 10px rgb(0, 0, 100);
+  transform: translateY(-2px);
+}
+
+#workbench #recipe {
+  position: relative;
+  width: 50px;
+  height: 50px;
+  border: 3px solid lightgray;
+  overflow: hidden;
+}
+
+#workbench #recipe:hover {
+  background: darkslategray;
+}
+
+#workbench #recipe div {
+  width: 50px;
+  height: 50px;
+  background: url("../images/spritesheets/items.png");
+  background-size: auto 50px;
+}
+
+#workbench #recipe-img {
+  position: absolute;
+  top: 50%;
+  left: 20px;
+  transform: translate(0, -50%);
+  padding: 5px;
+  border: 3px solid lightgray;
+}
+
+#workbench #recipe-img:hover {
+  background: darkslategray;
+}
+
+#workbench #input {
+  display: grid;
+  grid-template-columns: 50px 50px 50px;
+  gap: 10px;
+}
+
+#workbench #input #item {
+  position: relative;
+  width: 50px;
+  height: 50px;
+  border: 3px solid lightgray;
+  overflow: hidden;
+}
+
+#workbench #input #item:hover {
+  background: darkslategray;
+}
+
+#workbench #input #item div {
+  width: 50px;
+  height: 50px;
+  background: url("../images/spritesheets/items.png");
+  background-size: auto 50px;
+}
+
+#workbench #output {
+  width: 80px;
+  height: 80px;
+  position: relative;
+  border: 3px solid lightgray;
+  overflow: hidden;
+}
+
+#workbench #output:hover {
+  background: darkslategray;
+}
+
+#workbench #output div {
+  width: 80px;
+  height: 80px;
+  background: url("../images/spritesheets/items.png");
+  background-size: auto 80px;
+}

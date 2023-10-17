@@ -1,0 +1,283 @@
+* {
+  margin: 0;
+  padding: 0;
+  image-rendering: pixelated;
+}
+
+body {
+  overflow: hidden;
+  height: 100%;
+  font-family: arial;
+  user-select: none;
+  background: #000000;
+  position: fixed;
+}
+
+::-webkit-scrollbar {
+  width: 0px;
+}
+
+.clip {
+  clip-path: polygon(
+    0px 40px,
+    8px 40px,
+    8px 24px,
+    16px 24px,
+    16px 16px,
+    24px 16px,
+    24px 8px,
+    32px 8px,
+    40px 8px,
+    40px 0px,
+    calc(100% - 40px) 0px,
+    calc(100% - 40px) 8px,
+    calc(100% - 24px) 8px,
+    calc(100% - 24px) 16px,
+    calc(100% - 16px) 16px,
+    calc(100% - 16px) 24px,
+    calc(100% - 8px) 24px,
+    calc(100% - 8px) 32px,
+    calc(100% - 8px) 40px,
+    100% 40px,
+    100% calc(100% - 40px),
+    calc(100% - 8px) calc(100% - 40px),
+    calc(100% - 8px) calc(100% - 24px),
+    calc(100% - 16px) calc(100% - 24px),
+    calc(100% - 16px) calc(100% - 16px),
+    calc(100% - 24px) calc(100% - 16px),
+    calc(100% - 24px) calc(100% - 8px),
+    calc(100% - 32px) calc(100% - 8px),
+    calc(100% - 40px) calc(100% - 8px),
+    calc(100% - 40px) 100%,
+    40px 100%,
+    40px calc(100% - 8px),
+    24px calc(100% - 8px),
+    24px calc(100% - 16px),
+    16px calc(100% - 16px),
+    16px calc(100% - 24px),
+    8px calc(100% - 24px),
+    8px calc(100% - 32px),
+    8px calc(100% - 40px),
+    0px calc(100% - 40px)
+  );
+}
+
+#ui-container {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 999;
+  pointer-events: none;
+  display: flex;
+  justify-content: end;
+  overflow-x: hidden;
+}
+
+#ui-popup {
+  position: fixed;
+  z-index: 999;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  opacity: 0;
+  transition: opacity 200ms;
+  display: flex;
+  pointer-events: none;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.7);
+}
+
+#ui-box {
+  background: rgba(0, 0, 0, 0.7);
+  border-radius: 10px;
+  border: black 2px solid;
+  padding: 10px;
+  position: absolute;
+}
+
+#ui-popup-text {
+  color: white;
+  font-weight: 700;
+	font-family: pixel;
+	font-size: 20px;
+	letter-spacing: 1px;
+  text-align: center;
+}
+
+#ui-popup-box {
+  display: flex;
+  border-top: rgb(0, 0, 100) solid 2px;
+  margin-top: 10px;
+  padding-top: 10px;
+  gap: 10px;
+  justify-content: center;
+}
+
+#ui-continue {
+	color: white;
+  font-weight: 700;
+	font-family: pixel;
+	letter-spacing: 1px;
+  background: green;
+  border: darkgreen 2px solid;
+  padding: 10px;
+  border-radius: 10px;
+  cursor: pointer;
+	transition: transform 0.3s ease;
+}
+
+#ui-cancel {
+	color: white;
+  font-weight: 700;
+	font-family: pixel;
+	letter-spacing: 1px;
+  background: red;
+  border: darkred 2px solid;
+  padding: 10px;
+  border-radius: 10px;
+  cursor: pointer;
+	transition: transform 0.3s ease;
+}
+
+#ui-prompt-text {
+  padding: 10px;
+  outline: none;
+  border-radius: 10px;
+  border: rgb(0, 0, 100) 2px solid;
+  color: white;
+  background: rgba(0, 0, 0, 0.7);
+  display: none;
+	transition: background 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+#ui-prompt-text:focus {
+	background: rgba(0, 0, 50, 0.7);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgb(0, 0, 100);
+}
+
+#death-screen {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: radial-gradient(rgba(250, 0, 0, 0.7), rgba(250, 0, 0, 0.5));
+  display: flex;
+  gap: 20px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 200ms;
+}
+
+#death-screen #death-screen-text {
+  color: white;
+  font-size: 50px;
+  font-family: pixel;
+}
+
+#death-screen #death-screen-respawn, #death-screen-return {
+  border: black 2px solid;
+  outline: none;
+  padding: 10px;
+  border-radius: 10px;
+  font-family: pixel;
+  font-size: 30px;
+  letter-spacing: 1px;
+  cursor: pointer;
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  transition: background 0.3s ease, border 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+#ui-container #fps {
+	color: white;
+	position: fixed;
+	bottom: 0;
+	right: 0;
+	padding: 10px;
+	font-family: pixel;
+}
+
+#ui-container #ping {
+	color: white;
+	position: fixed;
+	bottom: 20px;
+	right: 0;
+	padding: 10px;
+	font-family: pixel;
+  opacity: 0;
+}
+
+#ui-container #online {
+	background: rgba(0, 0, 0, 0.7);
+	border: black 2px solid;
+	border-radius: 10px;
+	position: fixed;
+	left: 50%;
+	top: 50%;
+	transform: translate(-50%, -50%);
+	display: grid;
+	overflow: hidden;
+	grid-template-columns: auto auto auto auto auto;
+	pointer-events: none;
+	opacity: 0;
+	transition: opacity 200ms;
+}
+
+#ui-container #online #spot {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 10px;
+	color: white;
+	font-family: pixel;
+	padding: 5px;
+	margin: 1px;
+	background: rgba(0, 0, 50, 0.7);
+	border: rgb(0, 0, 100) 2px solid;
+	border-radius: 10px;
+}
+
+#ui-container #spot-text {
+  position: relative;
+  top: 50%;
+  transform: translate(0, -50%);
+}
+
+#ui-container #online #spot #ping-icon {
+	width: 32px;
+	height: 16px;
+	background: url("../images/spritesheets/ping.png");
+	background-size: auto 16px;
+  image-rendering: auto;
+  overflow: hidden;
+}
+
+canvas {
+	position: fixed;
+	top: 0;
+	left: 0;
+  z-index: -1;
+	pointer-events: none;
+}
+
+@font-face {
+	font-family: pixel;
+	src: url("../pixel.woff2");
+	font-display: swap;
+}
+
+@keyframes ping {
+  75%, 100% {
+    transform: scale(2);
+    opacity: 0;
+  }
+}
