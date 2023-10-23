@@ -1,4 +1,4 @@
-const serverUrl = "https://pixelwood-server.joshkeesee.repl.co/";
+const serverUrl = "https://pixel-realms-server.joshkeesee.repl.co/";
 const socket = typeof io != "undefined" ? io(serverUrl, {
 	autoConnect: false,
 	forceNew: true,

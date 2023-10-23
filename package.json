@@ -1,8 +1,8 @@
 {
-  "name": "pixelwood",
+  "name": "pixel-realms",
   "author": "Joshua Keesee <joshuakeesee1@gmail.com>",
   "version": "0.6.0",
-  "description": "An online RPG game where you can connect with friends and battle monsters to take back the kingdom of Pixelwood!",
+  "description": "An online RPG game where you can connect with friends and battle monsters to take back the kingdom of Pixel Realms!",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
@@ -13,8 +13,8 @@
     "release": "electron-builder"
   },
   "build": {
-    "productName": "Pixelwood",
-    "appId": "com.pixelwood.app",
+    "productName": "Pixel Realms",
+    "appId": "com.pixel-realms.app",
     "artifactName": "${productName}.${ext}",
     "directories": {
       "buildResources": "."
@@ -23,7 +23,7 @@
       {
         "provider": "github",
         "owner": "JoshKeesee",
-        "repo": "Pixelwood",
+        "repo": "Pixel Realms",
         "private": true,
         "releaseType": "release"
       }
@@ -44,14 +44,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/JoshKeesee/Pixelwood.git"
+    "url": "git+https://github.com/JoshKeesee/Pixel Realms.git"
   },
   "keywords": [],
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/JoshKeesee/Pixelwood/issues"
+    "url": "https://github.com/JoshKeesee/Pixel Realms/issues"
   },
-  "homepage": "https://github.com/JoshKeesee/Pixelwood#readme",
+  "homepage": "https://github.com/JoshKeesee/Pixel Realms#readme",
   "devDependencies": {
     "electron": "^25.2.0",
     "electron-builder": "^24.6.4"

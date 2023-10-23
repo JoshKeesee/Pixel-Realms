@@ -306,7 +306,7 @@ const mainMenu = {
 			mainMenu.switchButton(0, online ? "1" : "0");
 			online = false;
 			if (socket.connected) socket.disconnect();
-			mainMenu.gameText.innerText = "Pixelwood";
+			mainMenu.gameText.innerText = "Pixel Realms";
 			mainMenu.sideContainer.insertBefore(mainMenu.gameTitle, mainMenu.sideContainer.firstChild);
 		}, mainMenu.r ? 500 : 0);
 	},
