@@ -572,8 +572,7 @@ const player = {
 						p.dir == 0
 					) return;
 					gp.vibrate(10);
-					const d = (p.headArmor + p.bodyArmor + p.legArmor + 4) > itemStats[v.i[v.holding]].power ? 2 : (p.headArmor + p.bodyArmor + p.legArmor + 4);
-					p.health -= Math.floor(itemStats[v.i[v.holding]].power / (p.headArmor + p.bodyArmor + p.legArmor + 4));
+					p.health -= Math.floor(Math.max(itemStats[v.i[v.holding]].power / (p.headArmor + p.bodyArmor + p.legArmor), 2));
 					p.cooldown = 2;
 					const dx = p.dx, dy = p.dy;
 					if (c.dir == 0) p.dy = p.y = (c.y + 2) * tsize;

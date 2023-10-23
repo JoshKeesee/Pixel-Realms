@@ -10,7 +10,7 @@ const activeButtons = {
 		x = Math.floor(x / tsize);
 		y = Math.floor(y / tsize);
 		if (x < 0 || x >= map[scene].cols || y < 0 || y >= map[scene].rows) return;
-		const tile = getTile(scene, "scenery", x, y);
+		const tile = getTile(scene, "scenery", x, y), index = getIndex(scene, x, y);
 		if (!blockStats[tile] && !itemStats[i[holding]]) return;
 		if (blockStats[tile]?.type == "utility") key = controls[players[myId].controls].xKey;
 		else if (canBreak(i[holding], tile)) key = controls[players[myId].controls].zKey;

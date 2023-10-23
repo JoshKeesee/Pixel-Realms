@@ -78,8 +78,10 @@ function drawEntity(e) {
 }
 
 function getTile(s, l, c, r) {
-	if (map[s].layers[l]) return map[s].layers[l][getIndex(s, c, r)];
-	return map[s][l][getIndex(s, c, r)] || -1;
+	const i = getIndex(s, c, r);
+	if (i > map[s].cols * map[s].rows - 1) return -1;
+	if (map[s].layers[l]) return map[s].layers[l][i];
+	return map[s][l][i] || -1;
 }
 
 function getAllTiles(s, c, r) {
