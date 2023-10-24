@@ -68,7 +68,7 @@ const game = {
 				const maxEntities = Math.floor(Math.random() * 2);
 				for (let i = 0; i < maxEntities; i++) {
 					if (daylight.level >= 15) enemies.spawn({ scene });
-					else animals.spawn({ scene });
+					else if (m.type != "cave") animals.spawn({ scene });
 				}
 			}
 		});

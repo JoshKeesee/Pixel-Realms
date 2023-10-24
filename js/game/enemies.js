@@ -7,7 +7,7 @@ const enemies = {
 		if (e.x == e.dx && e.y == e.dy && (Math.floor(Math.random() * (50 - 1) + 1) == 1 || e.follow)) {
 			let moveX = e.dx, moveY = e.dy;
 			const random = Math.round(Math.random()) == 0 ? tsize : -tsize;
-			
+
 			if (Math.round(Math.random()) == 0) moveX += random;
 			else moveY += random;
 			if (moveX < 0) moveX += -random * 2;
@@ -99,7 +99,7 @@ const enemies = {
 				h: tsize,
 			})) {
 				const h = !e.helmet ? 1 : 2;
-        		e.health -= Math.floor(t.speed / h);
+				e.health -= Math.floor(t.speed / h);
 				if (e.health <= 0) {
 					if (t.from == myId) {
 						const p = players[t.from];
@@ -277,10 +277,10 @@ const enemies = {
 	findNearestPlayer(e, rad) {
 		let id = null;
 		Object.values(players).every(c => {
-		const dx = c.dx - e.dx;
-   		const dy = c.dy - e.dy;
+			const dx = c.dx - e.dx;
+			const dy = c.dy - e.dy;
 
-  		if (dx * dx + dy * dy < rad * rad && c.scene == e.scene && !c.editor && c.health > 0) return id = c.id;
+			if (dx * dx + dy * dy < rad * rad && c.scene == e.scene && !c.editor && c.health > 0) return id = c.id;
 			return false;
 		});
 		return id;

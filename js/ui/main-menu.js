@@ -89,7 +89,7 @@ const mainMenu = {
 		if (ui.death) selector = "#death-screen .button-";
 		for (let i = 0; i < this.buttons; i++) document.querySelector(selector + i).style = "";
 		document.querySelector(selector + this.curr).style.transform = "translateY(-2px)";
-		if (mainMenu.r && this.curr > 2) document.querySelector(selector + this.curr).scrollIntoView();
+		if (mainMenu.r && this.curr > 2) document.querySelector(selector + this.curr).parentElement.scrollIntoView();
 		else if (mainMenu.r) mainMenu.roomList.scrollTop = "0px";
 		if (mainMenu.r && this.curr != 0) return document.querySelector(selector + this.curr).style.background = "rgb(0, 200, 0)";
 		document.querySelector(selector + this.curr).style.background = "rgba(0, 0, 50, 0.7)";

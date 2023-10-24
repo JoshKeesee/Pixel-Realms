@@ -5,7 +5,7 @@ const animals = {
 		if (e.x == e.dx && e.y == e.dy && (Math.floor(Math.random() * (50 - 1) + 1) == 1)) {
 			let moveX = e.dx, moveY = e.dy;
 			const random = Math.round(Math.random()) == 0 ? tsize : -tsize;
-			
+
 			if (Math.round(Math.random()) == 0) moveX += random;
 			else moveY += random;
 			if (moveX < 0) moveX += -random * 2;
@@ -95,7 +95,7 @@ const animals = {
 				w: tsize,
 				h: tsize,
 			})) {
-        		e.health -= Math.floor(t.speed / 1);
+				e.health -= Math.floor(t.speed / 1);
 				if (e.health <= 0) {
 					if (t.from == myId) {
 						const p = players[t.from];
