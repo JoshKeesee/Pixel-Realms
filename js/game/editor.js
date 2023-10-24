@@ -240,9 +240,9 @@ const editor = {
 		return autotilingRecipes[currStr] || d;
 	},
 	updateAutotiling(c, r, e, s = editor.scene, l = editor.layer) {
-		map[s].layers[l][getIndex(s, c, r - 1)] = this.getAutotile(c, r - 1, getTile(s, l, c, r - 1), e, s, l);
-		map[s].layers[l][getIndex(s, c - 1, r)] = this.getAutotile(c - 1, r, getTile(s, l, c - 1, r), e, s, l);
-		map[s].layers[l][getIndex(s, c, r + 1)] = this.getAutotile(c, r + 1, getTile(s, l, c, r + 1), e, s, l);
-		map[s].layers[l][getIndex(s, c + 1, r)] = this.getAutotile(c + 1, r, getTile(s, l, c + 1, r), e, s, l);
+		if (r - 1 >= 0) map[s].layers[l][getIndex(s, c, r - 1)] = this.getAutotile(c, r - 1, getTile(s, l, c, r - 1), e, s, l);
+		if (c - 1 >= 0) map[s].layers[l][getIndex(s, c - 1, r)] = this.getAutotile(c - 1, r, getTile(s, l, c - 1, r), e, s, l);
+		if (r + 1 < map[s].rows) map[s].layers[l][getIndex(s, c, r + 1)] = this.getAutotile(c, r + 1, getTile(s, l, c, r + 1), e, s, l);
+		if (c + 1 < map[s].cols) map[s].layers[l][getIndex(s, c + 1, r)] = this.getAutotile(c + 1, r, getTile(s, l, c + 1, r), e, s, l);
 	},
 };
