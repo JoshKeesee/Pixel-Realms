@@ -766,36 +766,38 @@ const player = {
 
 		if ((keys[controls[p.controls].cKey] || gp.cKey()) && itemStats[p.i[p.holding]].placeable && !p.editor && !(p.zKey || gp.zKey())) {
 			index = getIndex(p.scene, c, r);
-			if (tile == -1 && !itemStats[p.i[p.holding]].placeOn) {
-				if (itemStats[p.i[p.holding]].name == "Chest") map[p.scene].chest[index] = [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1];
-				if (itemStats[p.i[p.holding]].name == "Furnace") map[p.scene].furnace[index] = {};
-				if (autotilingMap[itemStats[p.i[p.holding]].placeId]) {
-					const e = itemStats[p.i[p.holding]].placeId;
-					map[p.scene].layers["scenery"][index] = editor.getAutotile(c, r, e, e, p.scene, "scenery");
-					editor.updateAutotiling(c, r, e, p.scene, "scenery");
-				} else map[p.scene].layers["scenery"][index] = itemStats[p.i[p.holding]].placeId || p.i[p.holding] * 1000;
-				p.i[p.holding] = -1;
-				if (socket.connected && online) socket.emit("update map", [map[players[myId].scene], players[myId].scene]);
-			} else if (
-				(itemStats[p.i[p.holding]].placeOn.includes(tile) ||
-				 itemStats[p.i[p.holding]].placeOn.includes(getTile(p.scene, "ground", c, r))
-				)
-			) {
-				let dir = p.dir;
-				if (itemStats[p.i[p.holding]].type == "minecart") dir = (tile == 172) ? 1 : 0;
-				map[p.scene].entities.push({
-					type: itemStats[p.i[p.holding]].type,
-					id: itemStats[p.i[p.holding]].id,
-					speed: itemStats[p.i[p.holding]].speed || 5,
-					dir,
-					moving: false,
-					x: c * tsize,
-					y: r * tsize,
-					dx: c * tsize,
-					dy: r * tsize,
-				});
-				p.i[p.holding] = -1;
-				if (socket.connected && online) socket.emit("update map", [map[players[myId].scene], players[myId].scene]);
+			if (!(index > map[p.scene].cols * map[p.scene].rows - 1)) {
+				if (tile == -1 && !itemStats[p.i[p.holding]].placeOn) {
+					if (itemStats[p.i[p.holding]].name == "Chest") map[p.scene].chest[index] = [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1];
+					if (itemStats[p.i[p.holding]].name == "Furnace") map[p.scene].furnace[index] = {};
+					if (autotilingMap[itemStats[p.i[p.holding]].placeId]) {
+						const e = itemStats[p.i[p.holding]].placeId;
+						map[p.scene].layers["scenery"][index] = editor.getAutotile(c, r, e, e, p.scene, "scenery");
+						editor.updateAutotiling(c, r, e, p.scene, "scenery");
+					} else map[p.scene].layers["scenery"][index] = itemStats[p.i[p.holding]].placeId || p.i[p.holding] * 1000;
+					p.i[p.holding] = -1;
+					if (socket.connected && online) socket.emit("update map", [map[players[myId].scene], players[myId].scene]);
+				} else if (
+					(itemStats[p.i[p.holding]].placeOn.includes(tile) ||
+					 itemStats[p.i[p.holding]].placeOn.includes(getTile(p.scene, "ground", c, r))
+					)
+				) {
+					let dir = p.dir;
+					if (itemStats[p.i[p.holding]].type == "minecart") dir = (tile == 172) ? 1 : 0;
+					map[p.scene].entities.push({
+						type: itemStats[p.i[p.holding]].type,
+						id: itemStats[p.i[p.holding]].id,
+						speed: itemStats[p.i[p.holding]].speed || 5,
+						dir,
+						moving: false,
+						x: c * tsize,
+						y: r * tsize,
+						dx: c * tsize,
+						dy: r * tsize,
+					});
+					p.i[p.holding] = -1;
+					if (socket.connected && online) socket.emit("update map", [map[players[myId].scene], players[myId].scene]);
+				}
 			}
 		}
 	},

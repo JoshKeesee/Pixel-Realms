@@ -1,7 +1,7 @@
 const activeButtons = {
 	check(p) {
 		if (!p || editor.enabled || p.bed) return;
-		const { dx, dy, scene, dir, i, holding, zKey } = p;
+		const { dx, dy, scene, dir, i, holding, zKey, bed, minecart, boat } = p;
 		let x = dx, y = dy, key = "";
 		if (dir == 0) y += tsize;
 		if (dir == 1) y -= tsize;
@@ -9,7 +9,15 @@ const activeButtons = {
 		if (dir == 3) x += tsize;
 		x = Math.floor(x / tsize);
 		y = Math.floor(y / tsize);
-		if (x < 0 || x >= map[scene].cols || y < 0 || y >= map[scene].rows) return;
+		if (
+			x < 0 ||
+			x >= map[scene].cols ||
+			y < 0 ||
+			y >= map[scene].rows ||
+			typeof bed ||
+			typeof minecart ||
+			typeof boat
+		) return;
 		const tile = getTile(scene, "scenery", x, y), index = getIndex(scene, x, y);
 		if (!blockStats[tile] && !itemStats[i[holding]]) return;
 		if (blockStats[tile]?.type == "utility") key = controls[players[myId].controls].xKey;

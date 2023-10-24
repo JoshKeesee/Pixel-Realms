@@ -64,7 +64,7 @@
 	position: relative;
 	width: fit-content;
 	left: 50%;
-	top: 40%;
+	top: 50%;
 	transform: translate(-50%, -50%);
 	z-index: 2;
 	display: flex;
@@ -75,6 +75,7 @@
 	pointer-events: none;
 	padding: 20px;
 	transition: opacity 0.5s;
+	overflow-y: hidden;
 }
 
 #main-menu #back {
@@ -114,6 +115,7 @@
 	font-size: 25px;
 	letter-spacing: 1px;
 	scroll-behavior: smooth;
+	border-radius: 10px;
 }
 
 #main-menu #room {
