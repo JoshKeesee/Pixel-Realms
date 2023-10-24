@@ -9,16 +9,24 @@ const activeButtons = {
 		if (dir == 3) x += tsize;
 		x = Math.floor(x / tsize);
 		y = Math.floor(y / tsize);
+		if (touching.teleporter && map[scene].type == "house") return activeButtons.draw(
+			controls[players[myId].controls].xKey,
+			{ name: "House" },
+			x,
+			y - 1,
+			-1,
+			10
+		);
 		if (
 			x < 0 ||
 			x >= map[scene].cols ||
 			y < 0 ||
 			y >= map[scene].rows ||
-			typeof bed ||
-			typeof minecart ||
-			typeof boat
+			bed ||
+			typeof minecart == "number" ||
+			typeof boat == "number"
 		) return;
-		const tile = getTile(scene, "scenery", x, y), index = getIndex(scene, x, y);
+		const tile = getTile(scene, "scenery", x, y);
 		if (!blockStats[tile] && !itemStats[i[holding]]) return;
 		if (blockStats[tile]?.type == "utility") key = controls[players[myId].controls].xKey;
 		else if (canBreak(i[holding], tile)) key = controls[players[myId].controls].zKey;
@@ -38,6 +46,7 @@ const activeButtons = {
 		);
 	},
 	draw(key, item, x, y, tile, mt = 0) {
+		const c = controls[players[myId].controls];
 		if (key == controls[players[myId].controls].cKey && item.placeOn) {
 			if ((
 				!item.placeOn.includes(tile) &&
@@ -49,11 +58,12 @@ const activeButtons = {
 		ctx.textAlign = "center";
 		ctx.font = "15px pixel";
 		let text;
-		if (key == controls[players[myId].controls].xKey) text = "Use";
-		else if (key == controls[players[myId].controls].zKey) text = "Break";
-		else if (key == controls[players[myId].controls].cKey) text = "Place";
+		if (item.name == "House") text = "Leave";
+		else if (key == c.xKey) text = "Use";
+		else if (key == c.zKey) text = "Break";
+		else if (key == c.cKey) text = "Place";
 		ctx.fillText(
-			`${text} ${item.name} (${controls[players[myId].controls][Object.keys(controls[players[myId].controls]).find(k => controls[players[myId].controls][k] == key)]})`,
+			`${text} ${item.name} (${text == "Break" ? "Hold " + key : key})`,
 			x * tsize + tsize / 2,
 			players[myId].dir == 0 ? y * tsize + tsize + mt * 2 : y * tsize - mt
 		);
