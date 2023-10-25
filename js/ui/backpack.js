@@ -28,7 +28,7 @@ const backpack = {
         i = e.target.parentElement.classList.toString().replace("item", "");
       }
       i = parseInt(i);
-      backpack.replace(i, p.b[i], p.i[p.holding]);
+      backpack.replace(i, p.b[i].item, p.i[p.holding].item);
     };
     this.container.appendChild(item);
     const img = document.createElement("div");
@@ -53,19 +53,19 @@ const backpack = {
   },
   replace(i, i1, i2) {
     const p = players[myId];
-    p.i[p.holding] = i1;
-    p.b[i] = i2;
+    p.i[p.holding] = { item: i1, amount: 1 };
+    p.b[i] = { item: i2, amount: 1 };
     backpack.update(p.b);
   },
   update(b) {
 		if (!document.querySelector("#backpack")) return;
     for (let i = 0; i < b.length; i++) {
       const img = document.querySelector("#backpack .item" + i).getElementsByTagName("div")[0];
-      img.id = b[i].toString();
+      img.id = b[i].item.toString();
       img.style.opacity = 1;
-      let id = b[i] * 50;
-      if (itemStats[b[i]].animate && itemStats[b[i]].name != "Bow") id += frame * 50;
-      if (b[i] != -1) img.style.backgroundPosition = -1 * id + "px";
+      let id = b[i].item * 50;
+      if (itemStats[b[i].item].animate && itemStats[b[i].item].name != "Bow") id += frame * 50;
+      if (b[i].item != -1) img.style.backgroundPosition = -1 * id + "px";
       else img.style.opacity = 0;
     }
   },

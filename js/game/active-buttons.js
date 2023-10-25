@@ -11,7 +11,7 @@ const activeButtons = {
 		y = Math.floor(y / tsize);
 		if (touching.teleporter && map[scene].type == "house") return activeButtons.draw(
 			controls[players[myId].controls].xKey,
-			{ name: "House" },
+			{ item: "House" },
 			x,
 			y - 1,
 			-1,

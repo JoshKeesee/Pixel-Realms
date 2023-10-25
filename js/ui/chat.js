@@ -49,14 +49,12 @@ const chat = {
         else p = Object.values(players).find(e => e.name.replaceAll(" ", "_") == commands[1]);
         if (!p) return chat.receive({ name: "Error", message: `Couldn't find a player with the name ${commands[1]}.` });
 				if (!Number(commands[2])) commands[2] = Object.keys(itemStats).find(e => itemStats[e] == Object.values(itemStats).find(({ name }) => name.toLowerCase().replaceAll(" ", "_") == commands[2])) || commands[2];
-        if (!commands[2] || (p.i.indexOf(-1) == -1 && p.b.indexOf(-1) == -1) || !itemStats[commands[2]]) return chat.receive({ name: "Error", message: `Couldn't give item to player.` });
+        if (!commands[2] || (p.i.findIndex(e => e.item == -1) == -1 && p.b.findIndex(e => e.item == -1) == -1) || !itemStats[commands[2]]) return chat.receive({ name: "Error", message: `Couldn't give item to player.` });
         if (myId != p.id && socket.connected && online) socket.emit("give item", [p.id, commands[2], commands[3] || 1]);
         else {
           const amount = commands[3] || 1;
-          for (let i = 0; i < amount; i++) {
-            if (p.i.includes(-1)) p.i[p.i.indexOf(-1)] = commands[2];
-            else if (p.b.includes(-1)) p.b[p.b.indexOf(-1)] = commands[2];
-          }
+					if (p.i.some(e => e.item == -1)) p.i[p.i.findIndex(e => e.item == -1)] = { item: commands[2], amount };
+					else if (p.b.some(e => e.item == -1)) p.b[p.b.findIndex(e => e.item == -1)] = { item: commands[2], amount };
         }
         chat.receive({ name: "Success", message: `Gave ${p.name} ${itemStats[commands[2]].name}` });
       } else if (commands[0] == "/clear") {

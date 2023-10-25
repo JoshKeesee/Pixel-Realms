@@ -18,11 +18,11 @@ const inventory = {
 				lighting.fillStyle = "lightgray";
 			} else lighting.fillStyle = "gray";
 			lighting.fillRect(i * s + x, y, s, s);
-			if (p.i[i] > -1) {
+			if (p.i[i].item > -1) {
 				const space = 10;
 				lighting.drawImage(
 					images["items"],
-					(itemStats[p.i[i]].animate && itemStats[p.i[i]].type != "bow") ? p.i[i] * tsize + frame * tsize : p.i[i] * tsize,
+					(itemStats[p.i[i].item].animate && itemStats[p.i[i].item].type != "bow") ? p.i[i].item * tsize + frame * tsize : p.i[i].item * tsize,
 					0,
 					tsize,
 					tsize,
@@ -41,6 +41,6 @@ const inventory = {
 		lighting.font = "12px pixel";
 		lighting.lineWidth = 4;
 		lighting.strokeRect(p.holding * s + x, y, s, s);
-		lighting.fillText(itemStats[p.i[p.holding]].name, lighting.canvas.width / 2, y - 10);
+		lighting.fillText(itemStats[p.i[p.holding].item].name, lighting.canvas.width / 2, y - 10);
 	},
 }

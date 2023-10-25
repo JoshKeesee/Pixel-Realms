@@ -72,7 +72,7 @@ const workbench = {
         i = e.target.parentElement.classList.toString().replace("item", "");
         id = e.target.id;
       }
-      workbench.replace(i, id, p.i[p.holding]);
+      workbench.replace(i, id, p.i[p.holding].item);
     };
     this.input.appendChild(item);
     const img = document.createElement("div");
@@ -102,7 +102,7 @@ const workbench = {
       const images = document.querySelectorAll("#workbench #item");
       for (let i = 0; i < images.length; i++) {
         const img = images[i].getElementsByTagName("div")[0];
-        p.i[p.i.indexOf(-1)] = parseInt(img.id);
+        p.i[p.i.findIndex(e => e.item == -1)] = { item: parseInt(img.id), amount: 1 };
         img.id = "-1";
         img.style.opacity = 0;
       }
@@ -111,7 +111,7 @@ const workbench = {
   },
   replace(i, i1, i2) {
     const p = players[myId];
-    p.i[p.holding] = parseInt(i1);
+    p.i[p.holding].item = parseInt(i1);
     const img = document.querySelector("#workbench .item" + i).getElementsByTagName("div")[0];
     img.id = i2;
     img.style.opacity = 1;
@@ -143,8 +143,8 @@ const workbench = {
     const p = players[myId];
     const img = document.querySelector("#workbench #output").getElementsByTagName("div")[0];
     if (img.id == "-1") return;
-    if (p.i.includes(-1)) p.i[p.i.indexOf(-1)] = img.id;
-    else if (p.b.includes(-1)) p.b[p.b.indexOf(-1)] = img.id;
+    if (p.i.some(e => e.item == -1)) p.i[p.i.findIndex(e => e.item == -1)] = { item: img.id, amount: 1 };
+    else if (p.b.some(e => e.item == -1)) p.b[p.b.findIndex(e => e.item == -1)] = { item: img.id, amount: 1 };
     else return;
     img.id = "-1";
     img.style.opacity = 0;

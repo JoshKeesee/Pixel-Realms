@@ -21,7 +21,7 @@ const particles = {
 				frame: options.frame || Math.random() * 100,
 				opacity: options.opacity || Math.random(),
 				type: options.type || "dust",
-				shape: options.shape || typeof options.shape == "number" ? options.shape : "square",
+				shape: options.shape || typeof options.shape == "number" ? options.shape : "circle",
 				id: options.id,
 				scene: options.scene,
 			};
@@ -78,7 +78,7 @@ const particles = {
 				p.radius,
 				p.radius
 			);
-			if (p.type == "dust") p.opacity -= 0.002;
+			if (p.type == "dust") p.opacity -= 0.001;
 			if (p.type == "smoke") p.opacity -= 0.01;
 			if (p.type == "health") p.opacity -= 0.01;
 			c.globalAlpha = 1.0;
@@ -90,7 +90,7 @@ const particles = {
 				p.radius <= 0
 			) {
 				this.particles.splice(i, 1);
-				if (p.type == "dust") this.add(1);
+				if (p.type == "dust") this.add(1, { y: ptc.canvas.height, gravity: -0.7 });
 			}
 		});
 		if (readyToAnimate) ptc.restore();

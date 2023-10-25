@@ -51,7 +51,7 @@ const animals = {
 					if (e.health <= 0) {
 						if (v.id == myId) {
 							const p = players[v.id];
-							e.gives.forEach((item, i) => (p.i.includes(-1)) ? p.i[p.i.indexOf(-1)] = item : p.b.includes(-1) ? p.b[p.b.indexOf(-1)] = item : "");
+							e.gives.forEach((item, i) => (p.i.some(e => e.item == -1)) ? p.i[p.i.findIndex(e => e.item == -1)] = { item: item, amount: 1 } : p.b.some(e => e.item == -1) ? p.b[p.b.findIndex(e => e.item == -1)] = { item: item, amount: 1 } : "");
 						} else if (socket.connected && online) {
 							e.gives.forEach((item, i) => socket.emit("give item", [e.gives[i], v.id, 1]));
 						}
@@ -99,7 +99,7 @@ const animals = {
 				if (e.health <= 0) {
 					if (t.from == myId) {
 						const p = players[t.from];
-						e.gives.forEach((item, i) => (p.i.includes(-1)) ? p.i[p.i.indexOf(-1)] = item : p.b.includes(-1) ? p.b[p.b.indexOf(-1)] = item : "");
+						e.gives.forEach((item, i) => (p.i.some(e => e.item == -1)) ? p.i[p.i.findIndex(e => e.item == -1)] = { item: item, amount: 1 } : p.b.some(e => e.item == -1) ? p.b[p.b.findIndex(e => e.item == -1)] = { item: item, amount: 1 } : "");
 					} else if (socket.connected && online) {
 						e.gives.forEach((item, i) => socket.emit("give item", [e.gives[i], t.from, 1]));
 					}

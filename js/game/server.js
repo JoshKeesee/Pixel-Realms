@@ -35,8 +35,8 @@ if (socket) {
 		if (!item) return;
 		const p = players[myId];
 		for (let i = 0; i < amount; i++) {
-			if (p.i.includes(-1)) p.i[p.i.indexOf(-1)] = item;
-			else if (p.b.includes(-1)) p.b[p.b.indexOf(-1)] = item;
+			if (p.i.some(e => e.item == -1)) p.i[p.i.findIndex(e => e.item == -1)] = { item: item, amount: 1 };
+			else if (p.b.some(e => e.item == -1)) p.b[p.b.findIndex(e => e.item == -1)] = { item: item, amount: 1 };
 		}
 
 		if (socket.connected && online) socket.emit("update player", players[myId]);

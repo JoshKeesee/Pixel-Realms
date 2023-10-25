@@ -69,7 +69,7 @@ const mainMenu = {
 		button.innerText = text;
 		button.onclick = onclick;
 		if (b) button.className = "button-" + mainMenu.buttons;
-		if (b) button.onmouseover = () => mainMenu.switchButton(0, button.className.replace("button-", ""));
+		if (b) button.onmouseover = () => mainMenu.switchButton(0, button.className.replace("button-", ""), false);
 		if (b) mainMenu.buttons++;
 		return button;
 	},
@@ -80,7 +80,7 @@ const mainMenu = {
 			this.loading.appendChild(img);
 		};
 	},
-	switchButton(val, set) {
+	switchButton(val, set, scroll = true) {
 		if (mainMenu.r && mainMenu.privateInput) mainMenu.privateInput.blur();
 		this.curr += Number(val);
 		if (set) this.curr = Number(set);
@@ -90,9 +90,9 @@ const mainMenu = {
 		if (ui.death) selector = "#death-screen .button-";
 		for (let i = 0; i < this.buttons; i++) document.querySelector(selector + i).style = "";
 		document.querySelector(selector + this.curr).style.transform = "translateY(-2px)";
-		if (mainMenu.r && this.curr > 2) document.querySelector(selector + this.curr).parentElement.scrollIntoView();
+		if (mainMenu.r && this.curr > 2 && scroll) document.querySelector(selector + this.curr).parentElement.scrollIntoView();
 		else if (mainMenu.r) mainMenu.roomList.scrollTop = "0px";
-		if (mainMenu.r && this.curr != 0) return document.querySelector(selector + this.curr).style.background = "rgb(0, 255, 0)";
+		if (mainMenu.r && this.curr != 0) return document.querySelector(selector + this.curr).style.background = "rgb(0, 200, 0)";
 		document.querySelector(selector + this.curr).style.background = "rgba(0, 0, 100, 0.8)";
 		document.querySelector(selector + this.curr).style.borderColor = "rgb(0, 0, 255)";
 		document.querySelector(selector + this.curr).style.boxShadow = "0 4px 10px rgb(0, 0, 255)";
@@ -306,6 +306,8 @@ const mainMenu = {
 			const b = document.querySelector("#back");
 			if (b) b.remove();
 			mainMenu.rooms.innerHTML = "";
+			mainMenu.rooms.style = "";
+			if (mainMenu.roomsContainer) mainMenu.roomsContainer.remove();
 			mainMenu.container.style.opacity = 1;
 			mainMenu.loading.style.opacity = 0;
 			mainMenu.sideContainer.style.opacity = 1;

@@ -53,7 +53,7 @@ const daylight = {
 		}
 		Object.keys(players).forEach(id => {
 			const p = players[id];
-			if (p.scene == s && p.i[p.holding] == 32 && p.zKey) c.push({
+			if (p.scene == s && p.i[p.holding].item == 32 && p.zKey) c.push({
 				x: p.x + tsize / 2 - camera.x,
 				y: p.y + tsize / 2 - camera.y,
 			});

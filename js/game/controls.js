@@ -85,20 +85,20 @@ async function keyup(e) {
 	if (!editor.enabled) {
 		const p = players[myId];
 		if (!p) return;
-		const type = itemStats[p.i[p.holding]].type;
+		const type = itemStats[p.i[p.holding].item].type;
 		if ((e.key == controls[t].zKey || gp.zKey(true)) && ["helmet", "chestplate", "leggings"].includes(type)) {
 			const i = ["helmet", "chestplate", "leggings"].indexOf(type);
-			const h = p.i[p.holding];
-			if (type == "helmet" && p.headArmor != -1) p.i[p.holding] = 36 + 3 * p.headArmor;
-			else if (type == "chestplate" && p.bodyArmor != -1) p.i[p.holding] = 37 + 3 * p.bodyArmor;
-			else if (type == "leggings" && p.legArmor != -1) p.i[p.holding] = 38 + 3 * p.legArmor;
-			else p.i[p.holding] = -1;
+			const h = p.i[p.holding].item;
+			if (type == "helmet" && p.headArmor != -1) p.i[p.holding].item = 36 + 3 * p.headArmor;
+			else if (type == "chestplate" && p.bodyArmor != -1) p.i[p.holding].item = 37 + 3 * p.bodyArmor;
+			else if (type == "leggings" && p.legArmor != -1) p.i[p.holding].item = 38 + 3 * p.legArmor;
+			else p.i[p.holding].item = -1;
 			if (i == 0) p.headArmor = itemStats[h].setArmor;
 			else if (i == 1) p.bodyArmor = itemStats[h].setArmor;
 			else p.legArmor = itemStats[h].setArmor;
 			if (socket.connected && online) socket.emit("update player", p);
 			wardrobe.updateImages();
-		} else if ((e.key == controls[t].zKey || gp.zKey(true, true)) && itemStats[p.i[p.holding]].type == "bow" && (p.i.includes(67) || p.b.includes(67))) {
+		} else if ((e.key == controls[t].zKey || gp.zKey(true, true)) && itemStats[p.i[p.holding].item].type == "bow" && (p.i.includes(67) || p.b.includes(67))) {
 			let speed;
 			if (p.rotate < 15) return;
 			if (p.i.includes(67)) p.i[p.i.indexOf(67)] = "-1";

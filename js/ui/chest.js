@@ -29,7 +29,7 @@ const chest = {
         i = e.target.parentElement.classList.toString().replace("item", "");
       }
       i = parseInt(i);
-      chest.replace(i, map[p.scene].chest[this.i][i], p.i[p.holding]);
+      chest.replace(i, map[p.scene].chest[this.i][i], p.i[p.holding].item);
     };
     this.container.appendChild(item);
     const img = document.createElement("div");
@@ -59,7 +59,7 @@ const chest = {
   },
   replace(i, i1, i2) {
     const p = players[myId];
-    p.i[p.holding] = i1;
+    p.i[p.holding].item = i1;
     map[p.scene].chest[this.i][i] = i2;
     chest.update(map[p.scene].chest[this.i]);
   },

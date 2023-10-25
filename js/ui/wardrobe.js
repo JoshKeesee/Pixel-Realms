@@ -112,10 +112,10 @@ const wardrobe = {
     if (id == 0) { aType = "helmet"; type = "head" }
     else if (id == 1) { aType = "chestplate"; type = "body" }
     else { aType = "leggings"; type = "leg" }
-    if (itemStats[p.i[p.holding]].type != aType && p.i[p.holding] != -1) return;
-    const prev = p.i[p.holding];
+    if (itemStats[p.i[p.holding].item].type != aType && p.i[p.holding].item != -1) return;
+    const prev = p.i[p.holding].item;
     p[type + "Armor"] = itemStats[prev].setArmor;
-    p.i[p.holding] = document.querySelector("#wardrobe .armor" + id).className.split(" ")[1].replace("armor-", "");
+    p.i[p.holding].item = document.querySelector("#wardrobe .armor" + id).className.split(" ")[1].replace("armor-", "");
     if (socket.connected && online) socket.emit("update player", { [type + "Armor"]: p[type + "Armor"], i: p.i });
     this.updateImages();
   },

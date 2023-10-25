@@ -23,7 +23,7 @@ const furnace = {
     this.input.onclick = () => {
       const p = players[myId];
       const img = document.querySelector("#furnace #input").getElementsByTagName("div")[0];
-      furnace.replace(img.id, p.i[p.holding]);
+      furnace.replace(img.id, p.i[p.holding].item);
     }
     this.inputContainer.appendChild(this.input);
     this.fire = document.createElement("div");
@@ -93,7 +93,7 @@ const furnace = {
     img.style.opacity = 0;
     img.id = "-1";
     const p = players[myId];
-    p.i[p.holding] = parseInt(i1);
+    p.i[p.holding].item = parseInt(i1);
     img = document.querySelector("#furnace #input").getElementsByTagName("div")[0];
     img.id = i2;
     img.style.opacity = 1;
@@ -134,8 +134,8 @@ const furnace = {
     const p = players[myId];
     let img = document.querySelector("#furnace #output").getElementsByTagName("div")[0];
     if (img.id == "-1") return;
-    if (p.i.includes(-1)) p.i[p.i.indexOf(-1)] = img.id;
-    else if (p.b.includes(-1)) p.b[p.b.indexOf(-1)] = img.id;
+    if (p.i.some(e => e.item == -1)) p.i[p.i.findIndex(e => e.item == -1)] = { item: img.id, amount: 1 };
+    else if (p.b.some(e => e.item == -1)) p.b[p.b.findIndex(e => e.item == -1)] = { item: img.id, amount: 1 };
     else return;
     img.id = "-1";
     img.style.opacity = 0;
@@ -150,9 +150,9 @@ const furnace = {
   },
   addFuel() {
     const p = players[myId];
-    if (itemStats[p.i[p.holding]].type != "fuel") return;
-    furnace.fuelLevel += itemStats[p.i[p.holding]].fuelAmount;
-    p.i[p.holding] = -1;
+    if (itemStats[p.i[p.holding].item].type != "fuel") return;
+    furnace.fuelLevel += itemStats[p.i[p.holding].item].fuelAmount;
+    p.i[p.holding].item = -1;
 
     furnace.sync();
   },

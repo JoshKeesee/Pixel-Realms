@@ -89,13 +89,13 @@ const player = {
 			tsize,
 			tsize
 		);
-		if (p.i[p.holding] != -1 && p.rotate != 0) {
-			if (p.hunger > 100 && itemStats[p.i[p.holding]].type == "food") return;
-			if (["helmet", "chestplate", "leggings", "minecart"].includes(itemStats[p.i[p.holding]].type)) return;
+		if (p.i[p.holding].item != -1 && p.rotate != 0) {
+			if (p.hunger > 100 && itemStats[p.i[p.holding].item].type == "food") return;
+			if (["helmet", "chestplate", "leggings", "minecart"].includes(itemStats[p.i[p.holding].item].type)) return;
 			let s = 60, x = dx, y = dy + 10, f = frame;
 
 			const tools = ["pickaxe", "sword", "axe", "hoe"];
-			const bow = itemStats[p.i[p.holding]].type == "bow";
+			const bow = itemStats[p.i[p.holding].item].type == "bow";
 
 			if (bow && !p.i.includes(67) && !p.b.includes(67)) return;
 
@@ -105,10 +105,10 @@ const player = {
 				else x += tsize;
 				ctx.translate(x + s / 2, y + s / 2);
 				if (
-					tools.includes(itemStats[p.i[p.holding]].type) ||
-					itemStats[p.i[p.holding]].name == "Stick"
+					tools.includes(itemStats[p.i[p.holding].item].type) ||
+					itemStats[p.i[p.holding].item].name == "Stick"
 				) ctx.rotate(Math.cos(p.rotate / 10) / 2);
-				if (itemStats[p.i[p.holding]].type == "food") ctx.translate((p.dir == 1 || p.dir == 2) ? s / 2 : -tsize + s / 2, 10 * Math.cos(p.rotate / 2));
+				if (itemStats[p.i[p.holding].item].type == "food") ctx.translate((p.dir == 1 || p.dir == 2) ? s / 2 : -tsize + s / 2, 10 * Math.cos(p.rotate / 2));
 				if (p.dir == 1 || p.dir == 2) ctx.scale(-1, 1);
 				ctx.translate(-(x + s / 2), -(y + s / 2));
 			} else {
@@ -126,7 +126,7 @@ const player = {
 
 			ctx.drawImage(
 				images["items"],
-				(itemStats[p.i[p.holding]].animate) ? p.i[p.holding] * tsize + f * tsize : p.i[p.holding] * tsize,
+				(itemStats[p.i[p.holding].item].animate) ? p.i[p.holding].item * tsize + f * tsize : p.i[p.holding].item * tsize,
 				0,
 				tsize,
 				tsize,
@@ -233,7 +233,7 @@ const player = {
 				scene: p.scene,
 			});
 		});
-		
+
 		frame++;
 		if (frame > 3) frame = 0;
 
@@ -490,7 +490,7 @@ const player = {
 			e.x > map[p.scene].cols * tsize ||
 			e.y > map[p.scene].rows * tsize ||
 			enemies.walls(p.scene)[
-				getIndex(p.scene, Math.floor(e.x / tsize), Math.floor(e.y / tsize))
+			getIndex(p.scene, Math.floor(e.x / tsize), Math.floor(e.y / tsize))
 			] == 1 ||
 			e.speed.toFixed(0) == 0
 		) {
@@ -516,6 +516,7 @@ const player = {
 					w: tsize,
 					h: tsize,
 				}) &&
+				!p.bed &&
 				p.cooldown == 0 &&
 				(players[e.from].team != p.team && p.team)
 			) {
@@ -528,7 +529,7 @@ const player = {
 				gp.vibrate(10);
 				const d = (p.headArmor + p.bodyArmor + p.legArmor + 4) > e.speed * 2 ? 2 : (p.headArmor + p.bodyArmor + p.legArmor + 4);
 				p.health -= Math.floor(e.speed * 2 / d);
-        		p.cooldown = 2;
+				p.cooldown = 2;
 				if (socket.connected && online) socket.emit("remove entity", map[p.scene].entities.indexOf(e));
 				map[p.scene].entities.splice(map[p.scene].entities.indexOf(e), 1);
 			}
@@ -563,6 +564,7 @@ const player = {
 					v.dir == c.dir &&
 					!text.toggled &&
 					p.cooldown == 0 &&
+					!p.bed &&
 					(v.team != p.team || !p.team || v.enemy || v.animal)
 				) {
 					if (
@@ -632,8 +634,8 @@ const player = {
 			editor.enabled ||
 			ui.toggled
 		) return;
-		p.i.forEach((v, i) => (typeof v != "number") ? p.i[i] = Number(v) : "");
-		p.b.forEach((v, i) => (typeof v != "number") ? p.b[i] = Number(v) : "");
+		p.i.forEach((v, i) => (typeof v != "object") ? p.i[i] = { item: v, amount: 1 } : "");
+		p.b.forEach((v, i) => (typeof v != "object") ? p.b[i] = { item: v, amount: 1 } : "");
 
 		if (p.x == p.dx && p.y == p.dy) {
 			if (keys["Shift"] && p.hunger >= 25) p.speed = 8;
@@ -650,7 +652,7 @@ const player = {
 		r = Math.floor(p.dy / tsize);
 		tile = getTile(p.scene, "scenery", c, r);
 		entity = map[p.scene].entities.find(e => e && e.id != 2 && e.x == c * tsize && e.y == r * tsize && !e.enemy && !e.animal);
-		
+
 		const s = !dontCollide.includes(tile) || !dontCollide.includes(getTile(p.scene, "structure", c, r)) || getTile(p.scene, "ground", c, r) == 40 || entity;
 		if (!editor.enabled && s) { p.dx = p.x; p.dy = p.y }
 		if (p.dx < 0) p.x = p.dx = 0;
@@ -662,11 +664,11 @@ const player = {
 		p.y += p.speed * Math.sign(p.dy - p.y);
 		p.zKey = gp.zKey() || keys[controls[p.controls].zKey];
 		editor.scene = p.scene;
-		if (p.zKey && p.i[p.holding] != -1) p.rotate++;
+		if (p.zKey && p.i[p.holding].item != -1) p.rotate++;
 		else p.rotate = 0;
-		if (itemStats[p.i[p.holding]].type == "food" && p.rotate >= 100 && p.hunger <= 100) {
-			p.hunger += itemStats[p.i[p.holding]].hunger;
-			p.i[p.holding] = -1;
+		if (itemStats[p.i[p.holding].item].type == "food" && p.rotate >= 100 && p.hunger <= 100) {
+			p.hunger += itemStats[p.i[p.holding].item].hunger;
+			p.i[p.holding].item = -1;
 			if (p.hunger > 100) p.hunger = 150;
 		}
 
@@ -719,8 +721,8 @@ const player = {
 			boss.lorax.follow(p.id, 1);
 			camera.follow("lorax");
 		}
-		if (p.zKey && canBreak(p.i[p.holding], tile) && p.x == p.dx && p.y == p.dy && (p.i.includes(-1) || p.b.includes(-1))) {
-			if (map[p.scene].break[index] >= 0) map[p.scene].break[index] += itemStats[p.i[p.holding]].power / (50 * blockStats[tile].durability);
+		if (p.zKey && canBreak(p.i[p.holding].item, tile) && p.x == p.dx && p.y == p.dy && (p.i.some(e => e.item == -1) || p.b.some(e => e.item == -1))) {
+			if (map[p.scene].break[index] >= 0) map[p.scene].break[index] += itemStats[p.i[p.holding].item].power / (50 * blockStats[tile].durability);
 			else map[p.scene].break[index] = 0;
 			if (Math.abs(map[p.scene].break[index] - Math.floor(map[p.scene].break[index])) < 0.1) {
 				if (socket.connected && online) socket.emit("update break", [map[p.scene].break[index], p.scene, index]);
@@ -728,8 +730,8 @@ const player = {
 			}
 			if (map[p.scene].break[index] < 9) return;
 			delete map[p.scene].break[index];
-			if (p.i.includes(-1)) p.i[p.i.indexOf(-1)] = blockStats[tile].gives;
-			else p.b[p.b.indexOf(-1)] = blockStats[tile].gives;
+			if (p.i.some(e => e.item == -1)) p.i[p.i.findIndex(e => e.item == -1)] = { item: blockStats[tile].gives, amount: 1 };
+			else p.b[p.b.findIndex(e => e.item == -1)] = { item: blockStats[tile].gives, amount: 1 };
 			const prev = itemStats[blockStats[map[p.scene].layers.scenery[getIndex(p.scene, c, r)]].gives].placeId;
 			map[p.scene].layers.scenery[getIndex(p.scene, c, r)] = -1;
 			delete map[p.scene].chest[getIndex(p.scene, c, r)];
@@ -748,50 +750,50 @@ const player = {
 		if (
 			p.zKey &&
 			entity?.type == "minecart" &&
-			(p.i.includes(-1) ||
-			p.b.includes(-1))
+			(p.i.some(e => e.item == -1) ||
+				p.b.some(e => e.item == -1))
 		) {
-			if (p.i.includes(-1)) p.i[p.i.indexOf(-1)] = 54;
-			else p.b[p.b.indexOf(-1)] = 54;
+			if (p.i.some(e => e.item == -1)) p.i[p.i.findIndex(e => e.item == -1)] = { item: 54, amount: 1 };
+			else p.b[p.b.findIndex(e => e.item == -1)] = { item: 54, amount: 1 };
 			map[p.scene].entities.splice(map[p.scene].entities.indexOf(entity), 1);
 			if (socket.connected && online) socket.emit("remove entity", map[p.scene].entities.indexOf(entity));
 		}
 		if (
 			p.zKey &&
 			entity?.type == "boat" &&
-			(p.i.includes(-1) ||
-			p.b.includes(-1))
+			(p.i.some(e => e.item == -1) ||
+				p.b.some(e => e.item == -1))
 		) {
-			if (p.i.includes(-1)) p.i[p.i.indexOf(-1)] = 68;
-			else p.b[p.b.indexOf(-1)] = 68;
+			if (p.i.some(e => e.item == -1)) p.i[p.i.findIndex(e => e.item == -1)] = { item: 68, amount: 1 };
+			else p.b[p.b.findIndex(e => e.item == -1)] = { item: 68, amount: 1 };
 			map[p.scene].entities.splice(map[p.scene].entities.indexOf(entity), 1);
 			if (socket.connected && online) socket.emit("remove entity", map[p.scene].entities.indexOf(entity));
 		}
 
-		if ((keys[controls[p.controls].cKey] || gp.cKey()) && itemStats[p.i[p.holding]].placeable && !p.editor && !(p.zKey || gp.zKey())) {
+		if ((keys[controls[p.controls].cKey] || gp.cKey()) && itemStats[p.i[p.holding].item].placeable && !p.editor && !(p.zKey || gp.zKey())) {
 			index = getIndex(p.scene, c, r);
 			if (!(index > map[p.scene].cols * map[p.scene].rows - 1)) {
-				if (tile == -1 && !itemStats[p.i[p.holding]].placeOn) {
-					if (itemStats[p.i[p.holding]].name == "Chest") map[p.scene].chest[index] = [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1];
-					if (itemStats[p.i[p.holding]].name == "Furnace") map[p.scene].furnace[index] = {};
-					if (autotilingMap[itemStats[p.i[p.holding]].placeId]) {
-						const e = itemStats[p.i[p.holding]].placeId;
+				if (tile == -1 && !itemStats[p.i[p.holding].item].placeOn) {
+					if (itemStats[p.i[p.holding].item].name == "Chest") map[p.scene].chest[index] = [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1];
+					if (itemStats[p.i[p.holding].item].name == "Furnace") map[p.scene].furnace[index] = {};
+					if (autotilingMap[itemStats[p.i[p.holding].item].placeId]) {
+						const e = itemStats[p.i[p.holding].item].placeId;
 						map[p.scene].layers["scenery"][index] = editor.getAutotile(c, r, e, e, p.scene, "scenery");
 						editor.updateAutotiling(c, r, e, p.scene, "scenery");
-					} else map[p.scene].layers["scenery"][index] = itemStats[p.i[p.holding]].placeId || p.i[p.holding] * 1000;
-					p.i[p.holding] = -1;
+					} else map[p.scene].layers["scenery"][index] = itemStats[p.i[p.holding].item].placeId || p.i[p.holding].item * 1000;
+					p.i[p.holding].item = -1;
 					if (socket.connected && online) socket.emit("update map", [map[players[myId].scene], players[myId].scene]);
 				} else if (
-					(itemStats[p.i[p.holding]].placeOn.includes(tile) ||
-					 itemStats[p.i[p.holding]].placeOn.includes(getTile(p.scene, "ground", c, r))
+					(itemStats[p.i[p.holding].item].placeOn.includes(tile) ||
+						itemStats[p.i[p.holding].item].placeOn.includes(getTile(p.scene, "ground", c, r))
 					)
 				) {
 					let dir = p.dir;
-					if (itemStats[p.i[p.holding]].type == "minecart") dir = (tile == 172) ? 1 : 0;
+					if (itemStats[p.i[p.holding].item].type == "minecart") dir = (tile == 172) ? 1 : 0;
 					map[p.scene].entities.push({
-						type: itemStats[p.i[p.holding]].type,
-						id: itemStats[p.i[p.holding]].id,
-						speed: itemStats[p.i[p.holding]].speed || 5,
+						type: itemStats[p.i[p.holding].item].type,
+						id: itemStats[p.i[p.holding].item].id,
+						speed: itemStats[p.i[p.holding].item].speed || 5,
 						dir,
 						moving: false,
 						x: c * tsize,
@@ -799,7 +801,7 @@ const player = {
 						dx: c * tsize,
 						dy: r * tsize,
 					});
-					p.i[p.holding] = -1;
+					p.i[p.holding].item = -1;
 					if (socket.connected && online) socket.emit("update map", [map[players[myId].scene], players[myId].scene]);
 				}
 			}
