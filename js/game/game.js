@@ -24,8 +24,8 @@ const game = {
 		if (!players[myId] || !map || !readyToAnimate) return;
 		if (!players || !map || !map[players[myId].scene]) return editor.scene = players[myId].scene = map.length - 1;
 		player.update(players[myId]);
-		map.filter((sc, s) => Object.values(players).some(p => p.scene == s)).forEach(m => m.entities.filter(e => e.enemy).forEach(e => enemies.update(e)));
-		map.filter((sc, s) => Object.values(players).some(p => p.scene == s)).forEach(m => m.entities.filter(e => e.animal).forEach(e => animals.update(e)));
+		map.filter((sc, s) => Object.values(players).some(p => p.scene == s)).forEach(m => m.entities.filter(e => e?.enemy).forEach(e => enemies.update(e)));
+		map.filter((sc, s) => Object.values(players).some(p => p.scene == s)).forEach(m => m.entities.filter(e => e?.animal).forEach(e => animals.update(e)));
 		Object.keys(boss).forEach(b => boss[b].update());
 		camera.update();
 	},
@@ -106,8 +106,8 @@ const game = {
 			if (!players[myId] || !map || !readyToAnimate) return;
 			startFrames = t;
 			Object.values(players).forEach(p => p.scene == players[myId].scene ? player.frames(p) : "");
-			map.filter((sc, s) => Object.values(players).some(p => p.scene == s)).forEach(m => m.entities.filter(e => e.enemy).forEach(e => enemies.frames(e)));
-			map.filter((sc, s) => Object.values(players).some(p => p.scene == s)).forEach(m => m.entities.filter(e => e.animal).forEach(e => animals.frames(e)));
+			map.filter((sc, s) => Object.values(players).some(p => p.scene == s)).forEach(m => m.entities.filter(e => e?.enemy).forEach(e => enemies.frames(e)));
+			map.filter((sc, s) => Object.values(players).some(p => p.scene == s)).forEach(m => m.entities.filter(e => e?.animal).forEach(e => animals.frames(e)));
 			backpack.update(players[myId].b);
 			if (chest.i > -1 && map[players[myId].scene].chest[chest.i]) chest.update(map[players[myId].scene].chest[chest.i], false);
 		}

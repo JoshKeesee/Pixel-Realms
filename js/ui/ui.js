@@ -113,9 +113,9 @@ const ui = {
 		if (this.curr < 0) this.curr = 0;
 		for (let i = 0; i < this.buttons; i++) document.querySelector("#death-screen .button-" + i).style = "";
 		document.querySelector("#death-screen .button-" + this.curr).style.transform = "translateY(-2px)";
-		document.querySelector("#death-screen .button-" + this.curr).style.background = "rgba(0, 0, 50, 0.7)";
-		document.querySelector("#death-screen .button-" + this.curr).style.borderColor = "rgb(0, 0, 100)";
-		document.querySelector("#death-screen .button-" + this.curr).style.boxShadow = "0 4px 10px rgb(0, 0, 100)";
+		document.querySelector("#death-screen .button-" + this.curr).style.background = "rgba(0, 0, 100, 0.8)";
+		document.querySelector("#death-screen .button-" + this.curr).style.borderColor = "rgb(0, 0, 255)";
+		document.querySelector("#death-screen .button-" + this.curr).style.boxShadow = "0 4px 10px rgb(0, 0, 255)";
 	},
 	switchPromptButton(y) {
 		ui.promptText.blur();

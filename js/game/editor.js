@@ -202,7 +202,7 @@ const editor = {
 		ctx.beginPath();
 		ctx.fillStyle = "gray";
 		ctx.strokeStyle = "darkgray";
-		ctx.globalAlpha = 0.7;
+		ctx.globalAlpha = 0.8;
 		ctx.arc(ctx.canvas.width / 2 - size / 2, ctx.canvas.height / 2 - size / 2, size, 0, 2 * Math.PI);
 		ctx.fill();
 		ctx.stroke();

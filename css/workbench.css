@@ -81,7 +81,7 @@
 #workbench #back {
   padding: 10px;
   border: 2px solid black;
-  background: rgba(0, 0, 0, 0.7);
+  background: rgba(0, 0, 0, 0.8);
   border-radius: 10px;
   font-size: 15px;
   position: absolute;
@@ -92,17 +92,17 @@
 }
 
 #workbench #back:hover {
-  background: rgba(0, 0, 50, 0.7);
-  border: 2px solid rgb(0, 0, 100);
+  background: rgba(0, 0, 100, 0.8);
+  border: 2px solid rgb(0, 0, 255);
   transform: translateY(-2px);
-  box-shadow: 0 4px 10px rgba(0, 0, 100);
+  box-shadow: 0 4px 10px rgba(0, 0, 255);
 }
 
 #workbench #recipe-search {
   padding: 10px;
-  border: rgb(0, 0, 100) solid 2px;
+  border: rgb(0, 0, 255) solid 2px;
   border-radius: 10px;
-  background: rgba(0, 0, 0, 0.7);
+  background: rgba(0, 0, 0, 0.8);
   transition: background 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
   outline: none;
   color: white;
@@ -110,8 +110,8 @@
 }
 
 #workbench #recipe-search:focus {
-  background: rgba(0, 0, 50, 0.7);
-  box-shadow: 0 4px 10px rgb(0, 0, 100);
+  background: rgba(0, 0, 100, 0.8);
+  box-shadow: 0 4px 10px rgb(0, 0, 255);
   transform: translateY(-2px);
 }
 

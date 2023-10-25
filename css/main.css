@@ -88,11 +88,11 @@ body {
   pointer-events: none;
   align-items: center;
   justify-content: center;
-  background: rgba(0, 0, 0, 0.7);
+  background: rgba(0, 0, 0, 0.8);
 }
 
 #ui-box {
-  background: rgba(0, 0, 0, 0.7);
+  background: rgba(0, 0, 0, 0.8);
   border-radius: 10px;
   border: black 2px solid;
   padding: 10px;
@@ -110,7 +110,7 @@ body {
 
 #ui-popup-box {
   display: flex;
-  border-top: rgb(0, 0, 100) solid 2px;
+  border-top: rgb(0, 0, 255) solid 2px;
   margin-top: 10px;
   padding-top: 10px;
   gap: 10px;
@@ -147,17 +147,17 @@ body {
   padding: 10px;
   outline: none;
   border-radius: 10px;
-  border: rgb(0, 0, 100) 2px solid;
+  border: rgb(0, 0, 255) 2px solid;
   color: white;
-  background: rgba(0, 0, 0, 0.7);
+  background: rgba(0, 0, 0, 0.8);
   display: none;
 	transition: background 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 #ui-prompt-text:focus {
-	background: rgba(0, 0, 50, 0.7);
+	background: rgba(0, 0, 100, 0.8);
   transform: translateY(-2px);
-  box-shadow: 0 4px 10px rgb(0, 0, 100);
+  box-shadow: 0 4px 10px rgb(0, 0, 255);
 }
 
 #death-screen {
@@ -166,7 +166,7 @@ body {
   bottom: 0;
   left: 0;
   right: 0;
-  background: radial-gradient(rgba(250, 0, 0, 0.7), rgba(250, 0, 0, 0.5));
+  background: radial-gradient(rgba(250, 0, 0, 0.8), rgba(250, 0, 0, 0.5));
   display: flex;
   gap: 20px;
   flex-direction: column;
@@ -192,7 +192,7 @@ body {
   font-size: 30px;
   letter-spacing: 1px;
   cursor: pointer;
-  background: rgba(0, 0, 0, 0.7);
+  background: rgba(0, 0, 0, 0.8);
   color: white;
   transition: background 0.3s ease, border 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
 }
@@ -217,7 +217,7 @@ body {
 }
 
 #ui-container #online {
-	background: rgba(0, 0, 0, 0.7);
+	background: rgba(0, 0, 0, 0.8);
 	border: black 2px solid;
 	border-radius: 10px;
 	position: fixed;
@@ -241,8 +241,8 @@ body {
 	font-family: pixel;
 	padding: 5px;
 	margin: 1px;
-	background: rgba(0, 0, 50, 0.7);
-	border: rgb(0, 0, 100) 2px solid;
+	background: rgba(0, 0, 100, 0.8);
+	border: rgb(0, 0, 255) 2px solid;
 	border-radius: 10px;
 }
 

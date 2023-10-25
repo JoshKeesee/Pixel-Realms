@@ -109,7 +109,9 @@ const furnace = {
   },
   check() {
     let matching = false;
-    const img = document.querySelector("#furnace #output").getElementsByTagName("div")[0];
+		const image = document.querySelector("#furnace #output");
+		if (!image) return;
+    const img = image.getElementsByTagName("div")[0];
     Object.keys(furnaceRecipes).every(r => {
       if (this.current == r && this.fuelLevel > 0 && this.cooked >= 100 && furnace.currentFurnace == players[myId].furnace) {
         img.style.opacity = 1;
@@ -182,6 +184,7 @@ const furnace = {
     furnace.inputId = inputId >= -1 ? inputId : -1;
 
     const image = document.querySelector("#furnace #input");
+		if (!image) return;
     const img = image.getElementsByTagName("div")[0];
     img.id = furnace.inputId.toString();
     img.style.opacity = 1;
@@ -201,13 +204,13 @@ const furnace = {
       furnace.check();
     }
     const l = (furnace.fuelLevel > 100) ? 100 : furnace.fuelLevel;
-    furnace.fire.style.backgroundPosition = -1 * Math.ceil((9 / 100) * (100 - l)) * tsize + "px";
+    if (furnace.fire) furnace.fire.style.backgroundPosition = -1 * Math.ceil((9 / 100) * (100 - l)) * tsize + "px";
     if (furnace.current == -1 || furnace.fuelLevel == 0) {
       furnace.check();
-      furnace.progress.value = furnace.cooked = 0;
+      if (furnace.progress) furnace.progress.value = furnace.cooked = 0;
       return;
     }
-    furnace.progress.value = furnace.cooked += 100 / furnaceRecipes[furnace.current].time;
+		if (furnace.progress) furnace.progress.value = furnace.cooked += 100 / furnaceRecipes[furnace.current].time;
     if (furnace.cooked > 99) furnace.check();
   },
 };

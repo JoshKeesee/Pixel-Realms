@@ -3,6 +3,7 @@ const mainMenu = {
 	curr: 0,
 	cancel: false,
 	r: false,
+	cancelLoad: false,
 	create(n) {
 		if (document.pointerLockElement == ctx.canvas) document.exitPointerLock();
 		this.r = false;
@@ -91,10 +92,10 @@ const mainMenu = {
 		document.querySelector(selector + this.curr).style.transform = "translateY(-2px)";
 		if (mainMenu.r && this.curr > 2) document.querySelector(selector + this.curr).parentElement.scrollIntoView();
 		else if (mainMenu.r) mainMenu.roomList.scrollTop = "0px";
-		if (mainMenu.r && this.curr != 0) return document.querySelector(selector + this.curr).style.background = "rgb(0, 200, 0)";
-		document.querySelector(selector + this.curr).style.background = "rgba(0, 0, 50, 0.7)";
-		document.querySelector(selector + this.curr).style.borderColor = "rgb(0, 0, 100)";
-		document.querySelector(selector + this.curr).style.boxShadow = "0 4px 10px rgb(0, 0, 100)";
+		if (mainMenu.r && this.curr != 0) return document.querySelector(selector + this.curr).style.background = "rgb(0, 255, 0)";
+		document.querySelector(selector + this.curr).style.background = "rgba(0, 0, 100, 0.8)";
+		document.querySelector(selector + this.curr).style.borderColor = "rgb(0, 0, 255)";
+		document.querySelector(selector + this.curr).style.boxShadow = "0 4px 10px rgb(0, 0, 255)";
 	},
 	click() {
 		document.querySelector("#main-menu .button-" + mainMenu.curr).click();
@@ -214,8 +215,9 @@ const mainMenu = {
 		players = {};
 		myId = "offline";
 		players[myId] = JSON.parse(defaultPlayer);
-		if (online) await waitForConnect();
-		if ((!socket?.connected && online) || mainMenu.cancel) return;
+		let load = true;
+		if (online) load = await waitForConnect();
+		if ((!socket?.connected && online) || mainMenu.cancel || !load) return;
 		mainMenu.rooms.innerHTML = "";
 		if (getUser()) {
 			await loginUser(getUser());
@@ -235,7 +237,7 @@ const mainMenu = {
 		mainMenu.rooms.style.opacity = 1;
 	},
 	async play(o = false, room) {
-		mainMenu.cancel = mainMenu.ready = mainMenu.r = false;
+		mainMenu.cancel = mainMenu.ready = mainMenu.r = mainMenu.cancelLoad = false;
 		if (mainMenu.save) clearInterval(mainMenu.save);
 		online = o;
 		if (banned == room && online) return mainMenu.notify("You are banned from this room.", "red", 5000);
@@ -247,14 +249,19 @@ const mainMenu = {
 			if (!socket?.connected && online) {
 				mainMenu.backToMainMenu();
 				mainMenu.notify("Couldn't connect to server.", "red", 5000);
+			} else if (!readyToAnimate) {
+				mainMenu.backToMainMenu();
+				mainMenu.notify("Couldn't load assets.", "red", 5000);
 			}
 		}, 20000);
 		players = {};
 		myId = "offline";
 		players[myId] = JSON.parse(defaultPlayer);
-		if (online) await waitForConnect();
-		if ((!socket?.connected && online) || mainMenu.cancel) return;
-		await loadImages();
+		let load = true;
+		if (online) load = await waitForConnect();
+		if ((!socket?.connected && online) || mainMenu.cancel || !load) return;
+		load = await loadImages();
+		if (!load) return;
 		mainMenu.mainMenu.style.opacity = 0;
 		mainMenu.mainMenu.style.pointerEvents = "none";
 		mainMenu.container.style.pointerEvents = "none";
@@ -279,6 +286,7 @@ const mainMenu = {
 		particles.addTo(document.body);
 	},
 	backToMainMenu() {
+		mainMenu.cancelLoad = true;
 		mainMenu.buttons = 0;
 		mainMenu.sideContainer.innerHTML = "";
 		mainMenu.sideContainer.appendChild(mainMenu.createButton("Singleplayer", "play", async () => await mainMenu.play()));

@@ -46,9 +46,9 @@ const pause = {
 		if (this.curr < 0) this.curr = 0;
 		for (let i = 0; i < this.buttons; i++) document.querySelector("#pause-container .button-" + i).style = "";
 		document.querySelector("#pause-container .button-" + this.curr).style.transform = "translateY(-2px)";
-		document.querySelector("#pause-container .button-" + this.curr).style.background = "rgba(0, 0, 50, 0.7)";
-		document.querySelector("#pause-container .button-" + this.curr).style.borderColor = "rgb(0, 0, 100)";
-		document.querySelector("#pause-container .button-" + this.curr).style.boxShadow = "0 4px 10px rgb(0, 0, 100)";
+		document.querySelector("#pause-container .button-" + this.curr).style.background = "rgba(0, 0, 100, 0.8)";
+		document.querySelector("#pause-container .button-" + this.curr).style.borderColor = "rgb(0, 0, 255)";
+		document.querySelector("#pause-container .button-" + this.curr).style.boxShadow = "0 4px 10px rgb(0, 0, 255)";
 	},
 	click() {
 		if (document.querySelector("#pause-container .button-" + this.curr).innerText == "Return to main menu") this.buttons = this.curr = 0;

@@ -153,7 +153,7 @@ const player = {
 	},
 	drawNametag(p) {
 		if (!p || p.editor || p.health <= 0) return;
-		if (p.scene != players[myId].scene) return;
+		if (p.scene != players[myId].scene || !buffer[p.id]) return;
 		let dx = p.x, dy = p.y;
 		if (p.id != myId) {
 			dx = buffer[p.id].x;
@@ -748,18 +748,22 @@ const player = {
 		if (
 			p.zKey &&
 			entity?.type == "minecart" &&
-			p.i.includes(-1)
+			(p.i.includes(-1) ||
+			p.b.includes(-1))
 		) {
-			p.i[p.i.indexOf(-1)] = 54;
+			if (p.i.includes(-1)) p.i[p.i.indexOf(-1)] = 54;
+			else p.b[p.b.indexOf(-1)] = 54;
 			map[p.scene].entities.splice(map[p.scene].entities.indexOf(entity), 1);
 			if (socket.connected && online) socket.emit("remove entity", map[p.scene].entities.indexOf(entity));
 		}
 		if (
 			p.zKey &&
 			entity?.type == "boat" &&
-			p.i.includes(-1)
+			(p.i.includes(-1) ||
+			p.b.includes(-1))
 		) {
-			p.i[p.i.indexOf(-1)] = 68;
+			if (p.i.includes(-1)) p.i[p.i.indexOf(-1)] = 68;
+			else p.b[p.b.indexOf(-1)] = 68;
 			map[p.scene].entities.splice(map[p.scene].entities.indexOf(entity), 1);
 			if (socket.connected && online) socket.emit("remove entity", map[p.scene].entities.indexOf(entity));
 		}

@@ -64,7 +64,7 @@ function loadImages() {
 
 	Object.keys(images).forEach(i => images[i].onload = loadedImage);
 
-	return new Promise(res => setInterval(() => readyToAnimate ? res() : "", 1000));
+	return new Promise(res => setInterval(() => readyToAnimate && !mainMenu.cancelLoad ? res(true) : mainMenu.cancelLoad ? res(false) : "", 1000));
 }
 
 function loadedImage() {

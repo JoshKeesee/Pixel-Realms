@@ -151,8 +151,8 @@ function connect() {
 function waitForConnect() {
 	if (socket) connect();
 	return new Promise(res => {
-		if (socket.connected || !socket) res();
-		else socket.on("connect", res);
+		if (socket.connected || !socket) res(true);
+		else socket.on("connect", () => res(mainMenu.cancelLoad));
 	});
 }
 

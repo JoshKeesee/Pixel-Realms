@@ -180,7 +180,7 @@ const workbench = {
       img.onmouseover = () => workbench.updateResult(Object.values(res)[i]);
       r.appendChild(img);
       const p = players[myId];
-      if (!Object.values(res)[i].every(v => v == -1 || p.i.includes(v) || p.b.includes(v))) r.style.background = "rgba(255, 0, 0, 0.7)";
+      if (!Object.values(res)[i].every(v => v == -1 || p.i.includes(v) || p.b.includes(v))) r.style.background = "rgba(255, 0, 0, 0.8)";
       workbench.recipeResults.appendChild(r);
     });
   },
@@ -195,7 +195,7 @@ const workbench = {
       else img.style.opacity = 0;
       r.appendChild(img);
       const p = players[myId];
-      if (!(v[i] == -1 || p.i.includes(v[i]) || p.b.includes(v[i]))) r.style.background = "rgba(255, 0, 0, 0.7)";
+      if (!(v[i] == -1 || p.i.includes(v[i]) || p.b.includes(v[i]))) r.style.background = "rgba(255, 0, 0, 0.8)";
       workbench.recipePreview.appendChild(r);
     }
   },

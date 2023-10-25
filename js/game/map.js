@@ -4,7 +4,11 @@ function drawLayer(l, s) {
 			if (inViewport(c * tsize, r * tsize, tsize + editor.enabled ? 400 : 0)) continue;
 			let tile = Math.floor(getTile(s, l, c, r));
 			if (tile == 65) Object.keys(players).forEach(id => {
-				if (players[id].chest == getIndex(s, c, r) && typeof players[id].chest == "number") tile = 66;
+				if (
+					players[id].chest == getIndex(s, c, r) &&
+					typeof players[id].chest == "number" &&
+					players[id].scene == players[myId].scene
+				) tile = 66;
 			});
 			if (tile != -1) {
 				ctx.fillStyle = "black";

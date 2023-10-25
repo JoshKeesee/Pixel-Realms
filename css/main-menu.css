@@ -17,7 +17,7 @@
 	padding: 10px;
 	border: black 2px solid;
 	border-radius: 10px;
-	background: rgba(0, 0, 0, 0.7);
+	background: rgba(0, 0, 0, 0.8);
 	color: lightgreen;
 	font-weight: 700;
 	opacity: 0;
@@ -55,7 +55,7 @@
 	display: flex;
 	flex-direction: column;
 	gap: 10px;
-	background: radial-gradient(circle at center, rgba(0, 0, 100, 0.7), rgba(0, 0, 50, 0.7));
+	background: radial-gradient(circle at center, rgba(0, 0, 150, 0.8), rgba(0, 0, 50, 0.8) 99% 100%);
 	opacity: 1;
 	transition: opacity 1s;
 }
@@ -82,7 +82,8 @@
 	position: fixed;
 	top: 10px;
 	left: 10px;
-	background: rgba(0, 0, 0, 0.7);
+	z-index: 999;
+	background: rgba(0, 0, 0, 0.8);
 	border: black 2px solid;
 	outline: none;
 	padding: 10px;
@@ -119,7 +120,7 @@
 }
 
 #main-menu #room {
-	background: rgba(0, 0, 0, 0.7);
+	background: rgba(0, 0, 0, 0.8);
 	border: black 2px solid;
 	padding: 10px;
 	border-radius: 10px;
@@ -152,7 +153,7 @@
 	border: none;
 	height: 2px;
 	border-radius: 2px;
-	background: rgb(0, 0, 100);
+	background: rgb(0, 0, 255);
 	margin-bottom: 5px;
 }
 
@@ -172,7 +173,7 @@
 }
 
 #main-menu #private-room {
-	background: rgba(0, 0, 0, 0.7);
+	background: rgba(0, 0, 0, 0.8);
 	border: black 2px solid;
 	border-radius: 10px;
 	display: flex;
@@ -181,9 +182,9 @@
 }
 
 #main-menu #private-input {
-	background: rgba(0, 0, 0, 0.7);
+	background: rgba(0, 0, 0, 0.8);
 	outline: none;
-	border: rgb(0, 0, 100) 2px solid;
+	border: rgb(0, 0, 255) 2px solid;
 	border-radius: 10px;
 	color: white;
 	padding: 10px;
@@ -192,9 +193,9 @@
 
 #main-menu #private-input:focus {
 	transform: translateY(-2px);
-	background: rgba(0, 0, 50, 0.7);
-	border: rgb(0, 0, 100) 2px solid;
-	box-shadow: 0 4px 10px rgb(0, 0, 100);
+	background: rgba(0, 0, 100, 0.8);
+	border: rgb(0, 0, 255) 2px solid;
+	box-shadow: 0 4px 10px rgb(0, 0, 255);
 }
 
 #main-menu #side-container {
@@ -233,7 +234,7 @@
 }
 
 #main-menu #play {
-	background: rgba(0, 0, 0, 0.7);
+	background: rgba(0, 0, 0, 0.8);
 	border: black 2px solid;
 	outline: none;
 	padding: 10px;
