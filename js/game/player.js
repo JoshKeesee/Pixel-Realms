@@ -649,7 +649,7 @@ const player = {
 		c = Math.floor(p.dx / tsize);
 		r = Math.floor(p.dy / tsize);
 		tile = getTile(p.scene, "scenery", c, r);
-		entity = map[p.scene].entities.find(e => e && e.id != 2 && e.x == p.dx && e.y == p.dy && !e.enemy && !e.animal && e.scene == p.scene);
+		entity = map[p.scene].entities.find(e => e && e.id != 2 && e.x == c * tsize && e.y == r * tsize && !e.enemy && !e.animal);
 		
 		const s = !dontCollide.includes(tile) || !dontCollide.includes(getTile(p.scene, "structure", c, r)) || getTile(p.scene, "ground", c, r) == 40 || entity;
 		if (!editor.enabled && s) { p.dx = p.x; p.dy = p.y }
