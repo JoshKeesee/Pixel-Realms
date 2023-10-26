@@ -27,18 +27,18 @@ const activeButtons = {
 			typeof boat == "number"
 		) return;
 		const tile = getTile(scene, "scenery", x, y);
-		if (!blockStats[tile] && !itemStats[i[holding]]) return;
+		if (!blockStats[tile] && !itemStats[i[holding].item]) return;
 		if (blockStats[tile]?.type == "utility") key = controls[players[myId].controls].xKey;
-		else if (canBreak(i[holding], tile)) key = controls[players[myId].controls].zKey;
+		else if (canBreak(i[holding].item, tile)) key = controls[players[myId].controls].zKey;
 		else if (
-			((itemStats[i[holding]]?.placeable && tile == -1) ||
-			itemStats[i[holding]]?.placeOn) &&
+			((itemStats[i[holding].item]?.placeable && tile == -1) ||
+			itemStats[i[holding].item]?.placeOn) &&
 			!zKey
 		) key = controls[players[myId].controls].cKey;
 		else return;
 		activeButtons.draw(
 			key,
-			key == controls[players[myId].controls].cKey ? itemStats[i[holding]] : blockStats[tile],
+			key == controls[players[myId].controls].cKey ? itemStats[i[holding].item] : blockStats[tile],
 			x,
 			blockStats[tile]?.height ? y - blockStats[tile].height / 2 : y,
 			tile,
