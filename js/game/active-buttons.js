@@ -11,9 +11,17 @@ const activeButtons = {
 		y = Math.floor(y / tsize);
 		if (touching.teleporter && map[scene].type == "house") return activeButtons.draw(
 			controls[players[myId].controls].xKey,
-			{ item: "House" },
+			{ name: "House" },
 			x,
 			y - 1,
+			-1,
+			10
+		);
+		if (touching.teleporter && getTile(scene, "structure", x, y)) return activeButtons.draw(
+			controls[players[myId].controls].xKey,
+			{ name: "Door" },
+			x,
+			y,
 			-1,
 			10
 		);
@@ -26,12 +34,12 @@ const activeButtons = {
 			typeof minecart == "number" ||
 			typeof boat == "number"
 		) return;
-		const tile = getTile(scene, "scenery", x, y);
+		const tile = getTile(scene, "scenery", x, y), index = getIndex(scene, x, y);
 		if (!blockStats[tile] && !itemStats[i[holding].item]) return;
 		if (blockStats[tile]?.type == "utility") key = controls[players[myId].controls].xKey;
 		else if (canBreak(i[holding].item, tile)) key = controls[players[myId].controls].zKey;
 		else if (
-			((itemStats[i[holding].item]?.placeable && tile == -1) ||
+			((itemStats[i[holding].item]?.placeable && tile == -1 && !map[scene].structure[index]) ||
 			itemStats[i[holding].item]?.placeOn) &&
 			!zKey
 		) key = controls[players[myId].controls].cKey;
@@ -59,6 +67,7 @@ const activeButtons = {
 		ctx.font = "15px pixel";
 		let text;
 		if (item.name == "House") text = "Leave";
+		else if (item.name == "Door") text = "Open";
 		else if (key == c.xKey) text = "Use";
 		else if (key == c.zKey) text = "Break";
 		else if (key == c.cKey) text = "Place";

@@ -50,7 +50,7 @@ const workbench = {
     this.output.id = "output";
     this.container.appendChild(this.output);
     const img = document.createElement("div");
-    img.id = "-1";
+    img.id = "-1-1";
     img.onclick = this.takeOutput;
     this.output.appendChild(img);
     for (let i = 0; i < 9; i++) this.createItem(i);
@@ -72,19 +72,22 @@ const workbench = {
         i = e.target.parentElement.classList.toString().replace("item", "");
         id = e.target.id;
       }
-      workbench.replace(i, id, p.i[p.holding].item);
+      workbench.replace(i, id, p.i[p.holding]);
     };
     this.input.appendChild(item);
     const img = document.createElement("div");
-    img.id = "-1";
+    img.id = "-1-1";
     img.style.opacity = 0;
     item.appendChild(img);
+    const amount = document.createElement("div");
+    amount.id = "amount";
+    item.appendChild(amount);
   },
   toggle() {
     keys["x"] = false;
     keys["i"] = false;
     const img = document.querySelector("#workbench #output").getElementsByTagName("div")[0];
-    img.id = "-1";
+    img.id = "-1-1";
     img.style.opacity = 0;
     if (camera.setFade == 0) {
       camera.fadeTo(0.5);
@@ -102,20 +105,42 @@ const workbench = {
       const images = document.querySelectorAll("#workbench #item");
       for (let i = 0; i < images.length; i++) {
         const img = images[i].getElementsByTagName("div")[0];
-        p.i[p.i.findIndex(e => e.item == -1)] = { item: parseInt(img.id), amount: 1 };
-        img.id = "-1";
+        const it = furnace.parseId(img.id);
+        if (p.i.some(e => itemStats[e.item].stackable && e.amount < maxItems && e.item == it.item)) p.i[p.i.findIndex(e => itemStats[e.item].stackable && e.amount < maxItems && e.item == it.item)].amount++;
+        else if (p.b.some(e => itemStats[e.item].stackable && e.amount < maxItems && e.item == it.item)) p.b[p.b.findIndex(e => itemStats[e.item].stackable && e.amount < maxItems && e.item == it.item)].amount++;
+        else if (p.i.some(e => e.item == -1)) p.i[p.i.findIndex(e => e.item == -1)] = it;
+        else if (p.b.some(e => e.item == -1)) p.b[p.b.findIndex(e => e.item == -1)] = it;
+        img.id = "-1-1";
         img.style.opacity = 0;
+        images[i].getElementsByTagName("div")[1].innerText = "";
       }
       this.toggled = false;
     }
   },
   replace(i, i1, i2) {
     const p = players[myId];
-    p.i[p.holding].item = parseInt(i1);
+    let it = furnace.parseId(i1);
+    if (keys["Shift"] && p.i[p.holding].item != -1 && (it.item == -1 || it.item == p.i[p.holding].item)) {
+      if (it.item == -1) {
+        it = { item: p.i[p.holding].item, amount: 1 };
+        p.i[p.holding].amount--;
+      } else if (itemStats[p.i[p.holding].item].stackable) {
+        it.amount++;
+        p.i[p.holding].amount--;
+      }
+      if (p.i[p.holding].amount < 1) {
+        p.i[p.holding].amount = 1;
+        p.i[p.holding].item = -1;
+      }
+    } else {
+      p.i[p.holding] = furnace.parseId(i1);
+      it = i2;
+    }
     const img = document.querySelector("#workbench .item" + i).getElementsByTagName("div")[0];
-    img.id = i2;
+    img.id = it.item.toString() + "-" + it.amount.toString();
+    document.querySelector("#workbench .item" + i).getElementsByTagName("div")[1].innerText = it.amount > 1 ? it.amount : "";
     img.style.opacity = 1;
-    if (i2 != "-1") img.style.backgroundPosition = -1 * i2 * 50 + "px";
+    if (it.item != -1) img.style.backgroundPosition = -1 * it.item * 50 + "px";
     else img.style.opacity = 0;
     this.check();
   },
@@ -131,7 +156,7 @@ const workbench = {
         img.style.opacity = 1;
         if (r != -1) img.style.backgroundPosition = -1 * r * 80 + "px";
         else img.style.opacity = 0;
-        img.id = r.toString();
+        img.id = r.toString() + "-" + 1;
         matching = true;
         return false;
       }
@@ -143,16 +168,24 @@ const workbench = {
     const p = players[myId];
     const img = document.querySelector("#workbench #output").getElementsByTagName("div")[0];
     if (img.id == "-1") return;
-    if (p.i.some(e => e.item == -1)) p.i[p.i.findIndex(e => e.item == -1)] = { item: img.id, amount: 1 };
-    else if (p.b.some(e => e.item == -1)) p.b[p.b.findIndex(e => e.item == -1)] = { item: img.id, amount: 1 };
-    else return;
-    img.id = "-1";
+    const it = furnace.parseId(img.id);
+    for (let i = 0; i < it.amount; i++) {
+      if (p.i.some(e => itemStats[e.item].stackable && e.amount < maxItems && e.item == it.item)) p.i[p.i.findIndex(e => itemStats[e.item].stackable && e.amount < maxItems && e.item == it.item)].amount++;
+      else if (p.b.some(e => itemStats[e.item].stackable && e.amount < maxItems && e.item == it.item)) p.b[p.b.findIndex(e => itemStats[e.item].stackable && e.amount < maxItems && e.item == it.item)].amount++;
+      else if (p.i.some(e => e.item == -1)) p.i[p.i.findIndex(e => e.item == -1)] = { item: it.item, amount: 1 };
+      else if (p.b.some(e => e.item == -1)) p.b[p.b.findIndex(e => e.item == -1)] = { item: it.item, amount: 1 };
+    }
+    img.id = "-1-1";
     img.style.opacity = 0;
-    document.querySelectorAll("#workbench #item").forEach(i => {
-      i = i.getElementsByTagName("div")[0];
-      i.id = "-1";
-      i.style.opacity = 0;
+    document.querySelectorAll("#workbench #item").forEach(e => {
+      const i = e.getElementsByTagName("div")[0];
+      const it = furnace.parseId(i.id);
+      i.id = it.item + "-" + (it.amount - 1);
+      if (it.item == -1) i.style.opacity = 0;
+      else i.style.opacity = 1;
+      e.getElementsByTagName("div")[1].innerText = it.amount - 1 > 1 ? it.amount - 1 : "";
     });
+    workbench.check();
   },
   toggleRecipes() {
     const r = document.querySelector("#workbench #recipes");
@@ -180,7 +213,7 @@ const workbench = {
       img.onmouseover = () => workbench.updateResult(Object.values(res)[i]);
       r.appendChild(img);
       const p = players[myId];
-      if (!Object.values(res)[i].every(v => v == -1 || p.i.includes(v) || p.b.includes(v))) r.style.background = "rgba(255, 0, 0, 0.8)";
+      if (!Object.values(res)[i].every(v => v == -1 || p.i.some(e => e.item == v) || p.b.some(e => e.item == v))) r.style.background = "rgba(255, 0, 0, 0.8)";
       workbench.recipeResults.appendChild(r);
     });
   },
@@ -195,7 +228,7 @@ const workbench = {
       else img.style.opacity = 0;
       r.appendChild(img);
       const p = players[myId];
-      if (!(v[i] == -1 || p.i.includes(v[i]) || p.b.includes(v[i]))) r.style.background = "rgba(255, 0, 0, 0.8)";
+      if (!(v[i] == -1 || p.i.some(e => e.item == v[i]) || p.b.some(e => e.item == v[i]))) r.style.background = "rgba(255, 0, 0, 0.8)";
       workbench.recipePreview.appendChild(r);
     }
   },

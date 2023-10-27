@@ -3,6 +3,7 @@ const furnace = {
   cooked: 0,
   current: -1,
   inputId: -1,
+  inputAmount: 1,
   toggled: false,
   currentFurnace: false,
   create() {
@@ -23,7 +24,7 @@ const furnace = {
     this.input.onclick = () => {
       const p = players[myId];
       const img = document.querySelector("#furnace #input").getElementsByTagName("div")[0];
-      furnace.replace(img.id, p.i[p.holding].item);
+      furnace.replace(img.id, { ...p.i[p.holding] });
     }
     this.inputContainer.appendChild(this.input);
     this.fire = document.createElement("div");
@@ -42,14 +43,17 @@ const furnace = {
     this.output.id = "output";
     this.container.appendChild(this.output);
     let img = document.createElement("div");
-    img.id = "-1";
+    img.id = "-1-1";
     img.onclick = this.takeOutput;
     this.output.appendChild(img);
     img = document.createElement("div");
-    img.id = "-1";
+    img.id = "-1-1";
     this.input.appendChild(img);
+    const amount = document.createElement("div");
+    amount.id = "amount";
+    this.input.appendChild(amount);
     img = document.createElement("div");
-    img.id = "-1";
+    img.id = "-1-1";
     this.fuel.appendChild(img);
 		furnace.updateValue();
   },
@@ -60,7 +64,7 @@ const furnace = {
     keys["x"] = false;
     keys["i"] = false;
     const img = document.querySelector("#furnace #output").getElementsByTagName("div")[0];
-    img.id = "-1";
+    img.id = "-1-1";
     img.style.opacity = 0;
     if (camera.setFade == 0) {
       camera.fadeTo(0.5);
@@ -91,16 +95,33 @@ const furnace = {
   replace(i1, i2) {
     let img = document.querySelector("#furnace #output").getElementsByTagName("div")[0];
     img.style.opacity = 0;
-    img.id = "-1";
+    img.id = "-1-1";
     const p = players[myId];
-    p.i[p.holding].item = parseInt(i1);
+    let it = furnace.parseId(i1);
+    if (keys["Shift"] && p.i[p.holding].item != -1 && (it.item == -1 || it.item == p.i[p.holding].item)) {
+      if (it.item == -1) {
+        it = { item: p.i[p.holding].item, amount: 1 };
+        p.i[p.holding].amount--;
+      } else if (itemStats[p.i[p.holding].item].stackable) {
+        it.amount++;
+        p.i[p.holding].amount--;
+      }
+      if (p.i[p.holding].amount < 1) {
+        p.i[p.holding].amount = 1;
+        p.i[p.holding].item = -1;
+      }
+    } else {
+      p.i[p.holding] = furnace.parseId(i1);
+      it = i2;
+    }
     img = document.querySelector("#furnace #input").getElementsByTagName("div")[0];
-    img.id = i2;
+    img.id = it.item.toString() + "-" + it.amount.toString();
     img.style.opacity = 1;
-    furnace.inputId = i2;
-    if (i2 != -1) img.style.backgroundPosition = -1 * i2 * 50 + "px";
+    furnace.inputId = it.item;
+    furnace.inputAmount = it.amount;
+    if (it.item != -1) img.style.backgroundPosition = -1 * it.item * 50 + "px";
     else img.style.opacity = 0;
-    const current = Object.values(furnaceRecipes).find(e => e.from == parseInt(i2));
+    const current = Object.values(furnaceRecipes).find(e => e.from == it.item);
     if (current) this.current = Object.keys(furnaceRecipes)[Object.values(furnaceRecipes).indexOf(current)];
     else this.current = -1;
     this.cooked = 0;
@@ -126,33 +147,52 @@ const furnace = {
       return true;
     });
     if (!matching) {
-      img.id = "-1";
+      img.id = "-1-1";
       img.style.opacity = 0;
     }
   },
   takeOutput() {
     const p = players[myId];
     let img = document.querySelector("#furnace #output").getElementsByTagName("div")[0];
-    if (img.id == "-1") return;
-    if (p.i.some(e => e.item == -1)) p.i[p.i.findIndex(e => e.item == -1)] = { item: img.id, amount: 1 };
-    else if (p.b.some(e => e.item == -1)) p.b[p.b.findIndex(e => e.item == -1)] = { item: img.id, amount: 1 };
-    else return;
-    img.id = "-1";
+    if (img.id == "-1-1") return;
+    const it = furnace.parseId(img.id);
+    for (let i = 0; i < it.amount; i++) {
+      if (p.i.some(e => itemStats[e.item].stackable && e.amount < maxItems && e.item == it.item)) p.i[p.i.findIndex(e => itemStats[e.item].stackable && e.amount < maxItems && e.item == it.item)].amount++;
+      else if (p.b.some(e => itemStats[e.item].stackable && e.amount < maxItems && e.item == it.item)) p.b[p.b.findIndex(e => itemStats[e.item].stackable && e.amount < maxItems && e.item == it.item)].amount++;
+      else if (p.i.some(e => e.item == -1)) p.i[p.i.findIndex(e => e.item == -1)] = { item: it.item, amount: 1 };
+      else if (p.b.some(e => e.item == -1)) p.b[p.b.findIndex(e => e.item == -1)] = { item: it.item, amount: 1 };
+    }
+    img.id = "-1-1";
     img.style.opacity = 0;
     img = document.querySelector("#furnace #input").getElementsByTagName("div")[0];
-    img.id = "-1";
-    img.style.opacity = 0;
-    furnace.inputId = -1;
+    furnace.inputAmount--;
+    if (furnace.inputAmount < 1) {
+      furnace.current = -1;
+      furnace.inputId = -1;
+      furnace.inputAmount = 1;
+      img.style.opacity = 0;
+    }
+    img.id = furnace.inputId + "-" + furnace.inputAmount;
     furnace.cooked = 0;
-    furnace.current = -1;
 
     furnace.sync();
+  },
+  parseId(id) {
+    return { item: id.startsWith("-1") || id.split("-")[1] < 1 ? -1 : id.split("-")[0], amount: id.startsWith("-1") ? 1 : id.split("-")[1] };
   },
   addFuel() {
     const p = players[myId];
     if (itemStats[p.i[p.holding].item].type != "fuel") return;
-    furnace.fuelLevel += itemStats[p.i[p.holding].item].fuelAmount;
-    p.i[p.holding].item = -1;
+    if (keys["Shift"]) {
+      if (!(furnace.fuelLevel <= 100)) return;
+      p.i[p.holding].amount--;
+      furnace.fuelLevel += itemStats[p.i[p.holding].item].fuelAmount;
+    } else {
+      while (p.i[p.holding].amount > 0 && furnace.fuelLevel <= 100) {
+        p.i[p.holding].amount--;
+        furnace.fuelLevel += itemStats[p.i[p.holding].item].fuelAmount;
+      }
+    }
 
     furnace.sync();
   },
@@ -161,11 +201,15 @@ const furnace = {
 
     if (p.furnace < 0) return;
 
+    const amount = document.querySelector("#furnace #input").getElementsByTagName("div")[1];
+    amount.innerText = furnace.inputAmount > 1 ? furnace.inputAmount : "";
+
 		map[p.scene].furnace[p.furnace] = {
 			fuelLevel: furnace.fuelLevel,
 			cooked: furnace.cooked,
 			current: furnace.current,
       inputId: furnace.inputId,
+      inputAmount: furnace.inputAmount,
 		};
 
     if (socket.connected && online && s) socket.emit("update furnace", [
@@ -177,19 +221,23 @@ const furnace = {
   updateData() {
     const p = players[myId];
     if (!map[p.scene].furnace[p.furnace]) return;
-    const { fuelLevel, cooked, current, inputId } = map[p.scene].furnace[p.furnace];
+    const { fuelLevel, cooked, current, inputId, inputAmount } = map[p.scene].furnace[p.furnace];
     furnace.fuelLevel = fuelLevel >= -1 ? fuelLevel : 0;
     furnace.cooked = cooked >= -1 ? cooked : 0;
     furnace.current = current >= -1 ? current : -1;
     furnace.inputId = inputId >= -1 ? inputId : -1;
+    furnace.inputAmount = inputAmount >= -1 ? inputAmount : -1;
 
     const image = document.querySelector("#furnace #input");
 		if (!image) return;
     const img = image.getElementsByTagName("div")[0];
-    img.id = furnace.inputId.toString();
+    img.id = furnace.inputId.toString() + "-" + furnace.inputAmount;
     img.style.opacity = 1;
     if (furnace.inputId != -1) img.style.backgroundPosition = -1 * furnace.inputId * 50 + "px";
     else img.style.opacity = 0;
+
+    const amount = image.getElementsByTagName("div")[1];
+    amount.innerText = furnace.inputAmount > 1 ? furnace.inputAmount : "";
 
     const l = (furnace.fuelLevel > 100) ? 100 : furnace.fuelLevel;
     furnace.fire.style.backgroundPosition = -1 * Math.ceil((9 / 100) * (100 - l)) * tsize + "px";

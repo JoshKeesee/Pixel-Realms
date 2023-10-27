@@ -2,7 +2,7 @@ const images = {};
 let imagesLoaded = 0;
 let frame = 0;
 let readyToAnimate = false;
-const tsize = 80;
+const tsize = 80, maxItems = 64;
 
 function loadImages() {
 	images["tilemap"] = new Image();

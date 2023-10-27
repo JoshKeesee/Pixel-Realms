@@ -6,6 +6,8 @@ const inventory = {
 		const y = lighting.canvas.height - s - lighting.lineWidth - 21;
 		lighting.strokeStyle = "darkgray";
 		lighting.lineWidth = 3;
+		lighting.textAlign = "center";
+		lighting.font = "12px pixel";
 		for (let i = 0; i < p.i.length; i++) {
 			lighting.globalAlpha = 0.8;
 			if (colliding(p.mouse, {
@@ -31,14 +33,14 @@ const inventory = {
 					s - space,
 					s - space
 				);
+				lighting.fillStyle = "white";
+				if (p.i[i].amount > 1) lighting.fillText(p.i[i].amount, (i * s + x) + (s - 10), y + (s - 5));
 			}
 			lighting.globalAlpha = 1.0;
 			lighting.strokeRect(i * s + x, y, s, s);
 		}
 		lighting.strokeStyle = "lightgray";
 		lighting.fillStyle = "white";
-		lighting.textAlign = "center";
-		lighting.font = "12px pixel";
 		lighting.lineWidth = 4;
 		lighting.strokeRect(p.holding * s + x, y, s, s);
 		lighting.fillText(itemStats[p.i[p.holding].item].name, lighting.canvas.width / 2, y - 10);

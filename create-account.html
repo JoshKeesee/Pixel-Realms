@@ -43,10 +43,13 @@
 		particles.removeAll();
 		particles.addTo(document.querySelector("#main-container"));
 		particles.add(100);
-		let curr = 0, max = 7, players = {}, readyToAnimate, myId;
+		let curr = 0, max = 7, players = {}, readyToAnimate, myId, prof = false;
 		profile.addEventListener("change", e => {
 			const fr = new FileReader();
-			fr.onload = () => profileDisplay.src = fr.result;
+			fr.onload = () => {
+				profileDisplay.src = fr.result;
+				prof = true;
+			};
 			fr.readAsDataURL(e.target.files[0]);
 		});
 		form.addEventListener("submit", async e => {
@@ -85,8 +88,10 @@
 		}
 		function keydown(e) {
 			const k = e.key;
-			if ((k == "Enter" || gp.enter()) && curr != 4 && curr != max - 1) updateSelected(0, (max - 2).toString());
-			else if ((k == "Enter" || gp.enter()) && curr != max - 1) form.getElementsByTagName("label")[0].click();
+			if ((k == "Enter" || gp.enter()) && curr != 4 && curr != max - 1) {
+				updateSelected(0, (max - 2).toString());
+				if (!prof) return error.innerText = "Please choose a profile picture";
+			} else if ((k == "Enter" || gp.enter()) && curr != max - 1) form.getElementsByTagName("label")[0].click();
 		}
 		function keyup(e) {
 			const k = e.key;

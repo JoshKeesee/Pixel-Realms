@@ -38,15 +38,15 @@ const animals = {
 						h: tsize,
 					}) &&
 					v.rotate != 0 && (
-						itemStats[v.i[v.holding]].type == "sword" ||
-						itemStats[v.i[v.holding]].type == "axe"
+						itemStats[v.i[v.holding].item].type == "sword" ||
+						itemStats[v.i[v.holding].item].type == "axe"
 					) &&
 					!v.editor &&
 					v.dir == c.dir &&
 					!text.toggled &&
 					e.cooldown == 0
 				) {
-					e.health -= Math.floor(itemStats[v.i[v.holding]].power / 1);
+					e.health -= Math.floor(itemStats[v.i[v.holding].item].power / 1);
 					e.cooldown = 2;
 					if (e.health <= 0) {
 						if (v.id == myId) {

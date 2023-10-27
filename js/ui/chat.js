@@ -53,8 +53,12 @@ const chat = {
         if (myId != p.id && socket.connected && online) socket.emit("give item", [p.id, commands[2], commands[3] || 1]);
         else {
           const amount = commands[3] || 1;
-					if (p.i.some(e => e.item == -1)) p.i[p.i.findIndex(e => e.item == -1)] = { item: commands[2], amount };
-					else if (p.b.some(e => e.item == -1)) p.b[p.b.findIndex(e => e.item == -1)] = { item: commands[2], amount };
+          for (let i = 0; i < amount; i++) {
+            if (p.i.some(e => itemStats[e.item].stackable && e.amount < maxItems && e.item == commands[2])) p.i[p.i.findIndex(e => e.amount < maxItems && e.item == commands[2])].amount++;
+            else if (p.b.some(e => itemStats[e.item].stackable && e.amount < maxItems && e.item == commands[2])) p.b[p.b.findIndex(e => e.amount < maxItems && e.item == commands[2])].amount++;
+            else if (p.i.some(e => e.item == -1)) p.i[p.i.findIndex(e => e.item == -1)] = { item: commands[2], amount: 1 };
+					  else if (p.b.some(e => e.item == -1)) p.b[p.b.findIndex(e => e.item == -1)] = { item: commands[2], amount: 1 };
+          }
         }
         chat.receive({ name: "Success", message: `Gave ${p.name} ${itemStats[commands[2]].name}` });
       } else if (commands[0] == "/clear") {
@@ -66,7 +70,7 @@ const chat = {
           if (commands[2] == "i" && socket.connected && online) socket.emit("clear inventory", id);
           else if (commands[2] == "b" && socket.connected && online) socket.emit("clear backpack", id);
           else return chat.receive({ name: "Error", message: `${commands[2]} is not an option. Choose either i or b.` });
-        } else if (commands[2] == "i" || commands[2] == "b") players[id][commands[2]] = players[id][commands[2]].map(e => -1);
+        } else if (commands[2] == "i" || commands[2] == "b") players[id][commands[2]] = players[id][commands[2]].map(e => e = { item: -1, amount: 1 });
         else return chat.receive({ name: "Error", message: `${commands[2]} is not an option. Choose either i or b.` });
         chat.receive({ name: "Success", message: `Cleared ${players[id].name}'s ${(commands[2] == "i") ? "inventory" : "backpack"}` });
       } else if (commands[0] == "/time") {

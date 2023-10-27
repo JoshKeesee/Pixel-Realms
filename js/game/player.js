@@ -636,6 +636,12 @@ const player = {
 		) return;
 		p.i.forEach((v, i) => (typeof v != "object") ? p.i[i] = { item: v, amount: 1 } : "");
 		p.b.forEach((v, i) => (typeof v != "object") ? p.b[i] = { item: v, amount: 1 } : "");
+		p.i.forEach(v => v.amount > maxItems ? v.amount = maxItems : "");
+		p.b.forEach(v => v.amount > maxItems ? v.amount = maxItems : "");
+		p.i.forEach(v => { if (v.amount <= 0 || (v.item == -1 && v.amount > 1)) { v.amount = 0; v.item = -1 } });
+		p.b.forEach(v => { if (v.amount <= 0 || (v.item == -1 && v.amount > 1)) { v.amount = 0; v.item = -1 } });
+		p.i.forEach(v => !itemStats[v.item].stackable ? v.amount = 1 : "");
+		p.b.forEach(v => !itemStats[v.item].stackable ? v.amount = 1 : "");
 
 		if (p.x == p.dx && p.y == p.dy) {
 			if (keys["Shift"] && p.hunger >= 25) p.speed = 8;
@@ -646,12 +652,12 @@ const player = {
 		if ((keys[controls[p.controls].left] || gp.left()) && p.x == p.dx && p.y == p.dy) { p.dx -= tsize; p.dir = 2 }
 		if ((keys[controls[p.controls].right] || gp.right()) && p.x == p.dx && p.y == p.dy) { p.dx += tsize; p.dir = 3 }
 
-		let c, r, tile, entity;
+		let c, r, tile, index, entity;
 
 		c = Math.floor(p.dx / tsize);
 		r = Math.floor(p.dy / tsize);
 		tile = getTile(p.scene, "scenery", c, r);
-		entity = map[p.scene].entities.find(e => e && e.id != 2 && e.x == c * tsize && e.y == r * tsize && !e.enemy && !e.animal);
+		entity = map[p.scene].entities.find(e => e && e.x == c * tsize && e.y == r * tsize && !e.enemy && !e.animal);
 
 		const s = !dontCollide.includes(tile) || !dontCollide.includes(getTile(p.scene, "structure", c, r)) || getTile(p.scene, "ground", c, r) == 40 || entity;
 		if (!editor.enabled && s) { p.dx = p.x; p.dy = p.y }
@@ -717,11 +723,20 @@ const player = {
 		else if (p.x == p.dx && p.y == p.dy && entity && !entity.moving && c >= 0 && r >= 0 && c < map[p.scene].cols && r < map[p.scene].rows) touching[entity.type] = entity;
 		else if (p.x == p.dx && p.y == p.dy && map[p.scene].type == "house" && (index == map[p.scene].layers.scenery.length + map[p.scene].cols / 2 - 1 || index == map[p.scene].layers.scenery.length + map[p.scene].cols / 2)) touching.teleporter = { t: map[p.scene].from, tile: index };
 		else if (p.x == p.dx && p.y == p.dy && teleport.includes(door) && c >= 0 && r >= 0 && c < map[p.scene].cols && r < map[p.scene].rows) touching.teleporter = { t: map[p.scene].teleport[index], tile: door };
-		if (p.i.every(v => v == 24) && p.b.every(v => v == 24) && boss.lorax.f != myId) {
+		if (p.i.every(v => v.item == 24 && v.amount == maxItems) && p.b.every(v => v.item == 24 && v.amount == maxItems) && boss.lorax.f != myId) {
 			boss.lorax.follow(p.id, 1);
 			camera.follow("lorax");
 		}
-		if (p.zKey && canBreak(p.i[p.holding].item, tile) && p.x == p.dx && p.y == p.dy && (p.i.some(e => e.item == -1) || p.b.some(e => e.item == -1))) {
+		if (
+			p.zKey &&
+			canBreak(p.i[p.holding].item, tile) &&
+			p.x == p.dx &&
+			p.y == p.dy &&
+			(p.i.some(e => e.item == -1) ||
+			p.b.some(e => e.item == -1) ||
+			p.i.some(e => e.amount < maxItems && blockStats[tile].gives.some(i => e.item == i)) ||
+			p.b.some(e => e.amount < maxItems && blockStats[tile].gives.some(i => e.item == i)))
+		) {
 			if (map[p.scene].break[index] >= 0) map[p.scene].break[index] += itemStats[p.i[p.holding].item].power / (50 * blockStats[tile].durability);
 			else map[p.scene].break[index] = 0;
 			if (Math.abs(map[p.scene].break[index] - Math.floor(map[p.scene].break[index])) < 0.1) {
@@ -730,9 +745,13 @@ const player = {
 			}
 			if (map[p.scene].break[index] < 9) return;
 			delete map[p.scene].break[index];
-			if (p.i.some(e => e.item == -1)) p.i[p.i.findIndex(e => e.item == -1)] = { item: blockStats[tile].gives, amount: 1 };
-			else p.b[p.b.findIndex(e => e.item == -1)] = { item: blockStats[tile].gives, amount: 1 };
-			const prev = itemStats[blockStats[map[p.scene].layers.scenery[getIndex(p.scene, c, r)]].gives].placeId;
+			blockStats[tile].gives.forEach(i => {
+				if (blockStats[tile].stackable && p.i.some(e => e.amount < maxItems && e.item == i)) p.i[p.i.findIndex(e => e.amount < maxItems && e.item == i)].amount++;
+				else if (blockStats[tile].stackable && p.b.some(e => e.amount < maxItems && e.item == i)) p.b[p.b.findIndex(e => e.amount < maxItems && e.item == i)].amount++;
+				else if (p.i.some(e => e.item == -1)) p.i[p.i.findIndex(e => e.item == -1)] = { item: i, amount: 1 };
+				else p.b[p.b.findIndex(e => e.item == -1)] = { item: i, amount: 1 };
+			});
+			const prev = itemStats[blockStats[map[p.scene].layers.scenery[getIndex(p.scene, c, r)]].gives[0]].placeId;
 			map[p.scene].layers.scenery[getIndex(p.scene, c, r)] = -1;
 			delete map[p.scene].chest[getIndex(p.scene, c, r)];
 			delete map[p.scene].furnace[getIndex(p.scene, c, r)];
@@ -772,7 +791,7 @@ const player = {
 
 		if ((keys[controls[p.controls].cKey] || gp.cKey()) && itemStats[p.i[p.holding].item].placeable && !p.editor && !(p.zKey || gp.zKey())) {
 			index = getIndex(p.scene, c, r);
-			if (!(index > map[p.scene].cols * map[p.scene].rows - 1)) {
+			if (!(index > map[p.scene].cols * map[p.scene].rows - 1) && !map[p.scene]["structure"][index]) {
 				if (tile == -1 && !itemStats[p.i[p.holding].item].placeOn) {
 					if (itemStats[p.i[p.holding].item].name == "Chest") map[p.scene].chest[index] = [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1];
 					if (itemStats[p.i[p.holding].item].name == "Furnace") map[p.scene].furnace[index] = {};
@@ -781,12 +800,11 @@ const player = {
 						map[p.scene].layers["scenery"][index] = editor.getAutotile(c, r, e, e, p.scene, "scenery");
 						editor.updateAutotiling(c, r, e, p.scene, "scenery");
 					} else map[p.scene].layers["scenery"][index] = itemStats[p.i[p.holding].item].placeId || p.i[p.holding].item * 1000;
-					p.i[p.holding].item = -1;
+					p.i[p.holding].amount--;
 					if (socket.connected && online) socket.emit("update map", [map[players[myId].scene], players[myId].scene]);
 				} else if (
-					(itemStats[p.i[p.holding].item].placeOn.includes(tile) ||
-						itemStats[p.i[p.holding].item].placeOn.includes(getTile(p.scene, "ground", c, r))
-					)
+					(itemStats[p.i[p.holding].item].placeOn?.includes(tile) ||
+					itemStats[p.i[p.holding].item].placeOn?.includes(getTile(p.scene, "ground", c, r)))
 				) {
 					let dir = p.dir;
 					if (itemStats[p.i[p.holding].item].type == "minecart") dir = (tile == 172) ? 1 : 0;
