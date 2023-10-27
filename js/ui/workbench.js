@@ -179,7 +179,7 @@ const workbench = {
     img.style.opacity = 0;
     document.querySelectorAll("#workbench #item").forEach(e => {
       const i = e.getElementsByTagName("div")[0];
-      const it = furnace.parseId(i.id);
+      const it = (furnace.parseId(i.id).amount - 1) >= 1 ? furnace.parseId(i.id) : { item: -1, amount: 1 };
       i.id = it.item + "-" + (it.amount - 1);
       if (it.item == -1) i.style.opacity = 0;
       else i.style.opacity = 1;
