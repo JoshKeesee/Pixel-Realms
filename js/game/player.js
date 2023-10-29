@@ -674,7 +674,9 @@ const player = {
 		else p.rotate = 0;
 		if (itemStats[p.i[p.holding].item].type == "food" && p.rotate >= 100 && p.hunger <= 100) {
 			p.hunger += itemStats[p.i[p.holding].item].hunger;
-			p.i[p.holding].item = -1;
+			p.i[p.holding].amount--;
+			p.rotate = 0;
+			if (p.i[p.holding].amount < 1) p.i[p.holding] = { item: -1, amount: 1};
 			if (p.hunger > 100) p.hunger = 150;
 		}
 

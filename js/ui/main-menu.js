@@ -206,7 +206,7 @@ const mainMenu = {
 		mainMenu.container.style.opacity = 0;
 		mainMenu.sideContainer.style.opacity = 0;
 		mainMenu.loading.style.opacity = 1;
-		setTimeout(() => {
+		const ti = setTimeout(() => {
 			if (!socket?.connected && online) {
 				mainMenu.backToMainMenu();
 				mainMenu.notify("Couldn't connect to server.", "red", 5000);
@@ -215,9 +215,16 @@ const mainMenu = {
 		players = {};
 		myId = "offline";
 		players[myId] = JSON.parse(defaultPlayer);
-		let load = true;
+		let load = true, v = null;
 		if (online) load = await waitForConnect();
 		if ((!socket?.connected && online) || mainMenu.cancel || !load) return;
+		clearTimeout(ti);
+		if (online) v = await waitForVersion();
+		if (VERSION != v && online) {
+			mainMenu.notify("You are not using the latest version.", "red", 5000);
+			mainMenu.backToMainMenu();
+			return;
+		}
 		mainMenu.rooms.innerHTML = "";
 		if (getUser()) {
 			await loginUser(getUser());
@@ -245,7 +252,7 @@ const mainMenu = {
 		mainMenu.sideContainer.style.opacity = 0;
 		mainMenu.rooms.style.opacity = 0;
 		mainMenu.loading.style.opacity = 1;
-		setTimeout(() => {
+		const ti = setTimeout(() => {
 			if (!socket?.connected && online) {
 				mainMenu.backToMainMenu();
 				mainMenu.notify("Couldn't connect to server.", "red", 5000);
@@ -257,11 +264,18 @@ const mainMenu = {
 		players = {};
 		myId = "offline";
 		players[myId] = JSON.parse(defaultPlayer);
-		let load = true;
+		let load = true, v = null;
 		if (online) load = await waitForConnect();
 		if ((!socket?.connected && online) || mainMenu.cancel || !load) return;
+		if (online) v = await waitForVersion();
+		if (VERSION != v && online) {
+			mainMenu.notify("You are not using the latest version.", "red", 5000);
+			mainMenu.backToMainMenu();
+			return;
+		}
 		load = await loadImages();
 		if (!load) return;
+		clearTimeout(ti);
 		mainMenu.mainMenu.style.opacity = 0;
 		mainMenu.mainMenu.style.pointerEvents = "none";
 		mainMenu.container.style.pointerEvents = "none";
