@@ -37,7 +37,9 @@ if (socket) {
 		if (!item) return;
 		const p = players[myId];
 		for (let i = 0; i < amount; i++) {
-			if (p.i.some(e => e.item == -1)) p.i[p.i.findIndex(e => e.item == -1)] = { item: item, amount: 1 };
+			if (p.i.some(e => e.amount < maxItems && itemStats[e.item].stackable && e.item == item)) p.i[p.i.findIndex(e => e.amount < maxItems && itemStats[e.item].stackable && e.item == item)].amount++;
+			else if (p.b.some(e => e.amount < maxItems && itemStats[e.item].stackable && e.item == item)) p.b[p.b.findIndex(e => e.amount < maxItems && itemStats[e.item].stackable && e.item == item)].amount++;
+			else if (p.i.some(e => e.item == -1)) p.i[p.i.findIndex(e => e.item == -1)] = { item: item, amount: 1 };
 			else if (p.b.some(e => e.item == -1)) p.b[p.b.findIndex(e => e.item == -1)] = { item: item, amount: 1 };
 		}
 
