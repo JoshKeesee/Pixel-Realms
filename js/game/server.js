@@ -16,7 +16,7 @@ const user = { id: null };
 let online = false, banned = false;
 const dontCollide = [-1, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 54, 55, 56, 178, 179, 180, 78, 79, 80, 81, 82, 83, 102, 103, 104, 105, 106, 107, 136, 137, 138, 139, 140, 141, 172, 173, 174, 175, 176, 177, 192, 193, 194, 195, 196, 197, 198, 199, 200, 201, 205, 209, 213];
 
-const VERSION = "1.0.1";
+const VERSION = "1.0.2";
 
 async function loadDefault() {
 	map = updateMap(JSON.parse(defaultMap));
