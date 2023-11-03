@@ -169,8 +169,11 @@ const mainMenu = {
 			}
 			const defaultMap = await ui.confirm("Do you want to use the default map?");
 			const public = await ui.confirm("Is this room public?");
+			const teamMap = await ui.confirm("Do you want this room to have teams (PVP)?");
+			let numTeams = 0;
+			if (teamMap) numTeams = Math.max(Math.min(await ui.prompt("How many teams do you want (Max 4)?"), 4), 2);
 			if (ui.container) ui.container.remove();
-			mainMenu.createRoom({ name, public, defaultMap });
+			mainMenu.createRoom({ name, public, defaultMap, teamMap, numTeams });
 		});
 		mainMenu.roomsContainer.appendChild(mainMenu.privateRoom);
 		if (typeof user.id == "number") mainMenu.roomsContainer.appendChild(mainMenu.newRoom);
@@ -201,7 +204,6 @@ const mainMenu = {
 	async showRooms() {
 		mainMenu.r = true;
 		mainMenu.cancel = false;
-		if (mainMenu.save) clearInterval(mainMenu.save);
 		online = true;
 		mainMenu.container.style.opacity = 0;
 		mainMenu.sideContainer.style.opacity = 0;
@@ -245,7 +247,6 @@ const mainMenu = {
 	},
 	async play(o = false, room) {
 		mainMenu.cancel = mainMenu.ready = mainMenu.r = mainMenu.cancelLoad = false;
-		if (mainMenu.save) clearInterval(mainMenu.save);
 		online = o;
 		if (banned == room && online) return mainMenu.notify("You are banned from this room.", "red", 5000);
 		mainMenu.container.style.opacity = 0;
@@ -294,12 +295,14 @@ const mainMenu = {
 		wardrobe.create();
 		if (tutorial) runTutorial();
 		if (getUser()) await loginUser(getUser());
-		if (!online) await gameLoad();
+		if (!online) await save.load();
 		camera.fadeTo(0);
 		particles.removeAll();
 		particles.addTo(document.body);
 	},
 	backToMainMenu() {
+		leaderboard.toggled = false;
+		save.cancel = true;
 		mainMenu.cancelLoad = true;
 		mainMenu.buttons = 0;
 		mainMenu.sideContainer.innerHTML = "";

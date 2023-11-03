@@ -1,4 +1,4 @@
-const serverUrl = "https://pixel-realms-server.joshkeesee.repl.co/";
+const serverUrl = window.location == "https://pixel-realms-dev.pixel-realms.repl.co/" ? "https://pixel-realms-dev-server.pixel-realms.repl.co/" : "https://pixel-realms-server.joshkeesee.repl.co/";
 const socket = typeof io != "undefined" ? io(serverUrl, {
 	autoConnect: false,
 	forceNew: true,
@@ -39,8 +39,9 @@ if (socket) {
 		for (let i = 0; i < amount; i++) {
 			if (p.i.some(e => e.amount < maxItems && itemStats[e.item].stackable && e.item == item)) p.i[p.i.findIndex(e => e.amount < maxItems && itemStats[e.item].stackable && e.item == item)].amount++;
 			else if (p.b.some(e => e.amount < maxItems && itemStats[e.item].stackable && e.item == item)) p.b[p.b.findIndex(e => e.amount < maxItems && itemStats[e.item].stackable && e.item == item)].amount++;
-			else if (p.i.some(e => e.item == -1)) p.i[p.i.findIndex(e => e.item == -1)] = { item: item, amount: 1 };
-			else if (p.b.some(e => e.item == -1)) p.b[p.b.findIndex(e => e.item == -1)] = { item: item, amount: 1 };
+			else if (p.i.some(e => e.item == -1)) p.i[p.i.findIndex(e => e.item == -1)] = { item, amount: 1 };
+			else if (p.b.some(e => e.item == -1)) p.b[p.b.findIndex(e => e.item == -1)] = { item, amount: 1 };
+			player.getLvl(itemStats[item].xp);
 		}
 
 		if (socket.connected && online) socket.emit("update player", players[myId]);
@@ -56,6 +57,8 @@ if (socket) {
 		if (socket.connected && online) socket.emit("update player", players[myId]);
 	});
 	socket.on("init map", m => map = m);
+	socket.on("init leaderboard", l => leaderboard.arr = l);
+	socket.on("update leaderboard", u => leaderboard.arr[u.id] = u);
 	socket.on("init entities", entities => entities.forEach((e, i) => map[i].entities = e));
 	socket.on("update map", d => {
 		map[d[1]] = d[0];
@@ -119,31 +122,6 @@ function updateMap(m) {
 		});
 	});
 	return m;
-}
-
-function gameSave() {
-	if (online || players[myId].name == "Offline") return;
-	localStorage.setItem("game save", JSON.stringify({ map, players, l: daylight.level }));
-}
-
-async function gameLoad() {
-	buffer = {};
-	buffer[myId] = { x: players[myId].x, y: players[myId].y, health: players[myId].health };
-	mainMenu.save = setInterval(gameSave, 5000);
-	if (online || typeof user.id != "number") return;
-	map = updateMap(JSON.parse(defaultMap));
-	players[myId] = JSON.parse(defaultPlayer);
-	players[myId].name = user.name;
-	buffer = {};
-	buffer[myId] = { x: players[myId].x, y: players[myId].y, health: players[myId].health };
-	const save = JSON.parse(localStorage.getItem("game save"));
-	if (!save) return gameSave();
-	map = updateMap(save.map);
-	players = save.players;
-	daylight.level = save.l;
-	buffer = {};
-	Object.keys(players).forEach(k => buffer[k] = { x: players[k].x, y: players[k].y, health: players[k].health });
-	players[myId].name = user.name;
 }
 
 function connect() {

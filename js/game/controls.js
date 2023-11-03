@@ -123,8 +123,9 @@ async function keyup(e) {
 			});
 			socket.emit("update entity", [map[p.scene].entities[map[p.scene].entities.length - 1], map[p.scene].entities.length - 1]);
 		}
-		
-		if (touching.workbench && (e.key == controls[t].xKey || gp.xKey()) && !text.toggled && document.activeElement != workbench.recipeSearch) workbench.toggle();
+
+		if (e.key == "l") leaderboard.toggled = !leaderboard.toggled;
+		else if (touching.workbench && (e.key == controls[t].xKey || gp.xKey()) && !text.toggled && document.activeElement != workbench.recipeSearch) workbench.toggle();
 		else if (touching.wardrobe && (e.key == controls[t].xKey || gp.xKey()) && !text.toggled) wardrobe.toggle();
 		else if (touching.furnace && (e.key == controls[t].xKey || gp.xKey()) && !text.toggled) furnace.toggle(touching.furnace.index);
 		else if (touching.sign && (e.key == controls[t].xKey || gp.xKey()) && !text.toggled) text.set([touching.sign.t], "tilemap", 67);

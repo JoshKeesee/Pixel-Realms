@@ -173,6 +173,7 @@ const game = {
 		lighting.globalCompositeOperation = "source-over";
 		lighting.globalAlpha = 1;
 		daylight.draw(players[myId].scene);
+		if (!editor.enabled && online) leaderboard.draw();
 		if (editor.enabled) editor.drawCenter();
 		else health.draw(players[myId]);
 		if (boss.lorax.f != myId && !text.toggled) inventory.draw(players[myId]);

@@ -138,7 +138,7 @@ const furnace = {
         img.style.opacity = 1;
         if (r != -1) img.style.backgroundPosition = -1 * r * 80 + "px";
         else img.style.opacity = 0;
-        img.id = r.toString();
+        img.id = r.toString() + "-" + 1;
         matching = true;
         this.cooked = 100;
         furnace.sync(false);
@@ -161,6 +161,7 @@ const furnace = {
       else if (p.b.some(e => itemStats[e.item].stackable && e.amount < maxItems && e.item == it.item)) p.b[p.b.findIndex(e => itemStats[e.item].stackable && e.amount < maxItems && e.item == it.item)].amount++;
       else if (p.i.some(e => e.item == -1)) p.i[p.i.findIndex(e => e.item == -1)] = { item: it.item, amount: 1 };
       else if (p.b.some(e => e.item == -1)) p.b[p.b.findIndex(e => e.item == -1)] = { item: it.item, amount: 1 };
+			player.getLvl(itemStats[it.item].xp);
     }
     img.id = "-1-1";
     img.style.opacity = 0;
@@ -201,7 +202,8 @@ const furnace = {
 
     if (p.furnace < 0) return;
 
-    const amount = document.querySelector("#furnace #input").getElementsByTagName("div")[1];
+    const amount = document.querySelector("#furnace #input")?.getElementsByTagName("div")[1];
+		if (!amount) return;
     amount.innerText = furnace.inputAmount > 1 ? furnace.inputAmount : "";
 
 		map[p.scene].furnace[p.furnace] = {

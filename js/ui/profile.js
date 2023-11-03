@@ -64,7 +64,6 @@ window.onmessage = async e => {
 }
 
 const logoutUser = () => {
-	if (!online) gameSave();
   user.id = null;
   delete user.name;
   delete user.profile;
@@ -93,7 +92,7 @@ const handleLogin = async data => {
     if (profile.toggled) profile.toggle();
     setUser(data);
 		await loginUser(data);
-		if (!online) gameLoad();
+		if (!online) save.load();
     players[myId].name = user.name = data.username;
     players[myId].user = data;
 		profile.info(user);

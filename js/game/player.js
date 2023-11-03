@@ -11,6 +11,8 @@ const player = {
 		p.health = 100;
 		p.hunger = 150;
 		p.dir = 0;
+		p.xp -= 500;
+		if (p.xp < 0) p.xp = 0;
 		if (socket.connected && online) socket.emit("update player", p);
 	},
 	draw(p) {
@@ -171,26 +173,43 @@ const player = {
 			if (!p || editor.enabled) return p.frame = frame = 0;
 		}
 
+		if (typeof p.stamina == "undefined") p.stamina = 100;
+
 		if ((p.x != p.dx || p.y != p.dy) && !ui.death) {
 			p.frame++;
 			p.hunger -= 0.02;
 			const angle = Math.atan2(0, Math.abs(p.dx - p.x));
-			if (p.speed > 5) particles.add(20, {
-				x: p.x + tsize / 2,
-				y: p.y + tsize - 20,
-				z: 0,
-				radius: 5 + Math.random() * 5,
-				speed: 0.5,
-				gravity: 0,
-				color: "lightgray",
-				type: "smoke",
-				opacity: 0.4,
-				shape: "circle",
-				angle,
-				scene: p.scene,
-			});
+			if (p.speed > 5) {
+				p.stamina -= 1;
+				if (p.stamina < 0) {
+					p.stamina = 0;
+					p.staminaCooldown = true;
+				}
+				particles.add(20, {
+					x: p.x + tsize / 2,
+					y: p.y + tsize - 20,
+					z: 0,
+					radius: 5 + Math.random() * 5,
+					speed: 0.5,
+					gravity: 0,
+					color: "lightgray",
+					type: "smoke",
+					opacity: 0.4,
+					shape: "circle",
+					angle,
+					scene: p.scene,
+				});
+			} else {
+				p.stamina += p.staminaCooldown ? 0.8 : 0.1;
+				if (p.stamina > 100) p.stamina = 100;
+				if (p.stamina >= 20) p.staminaCooldown = false;
+			}
+		} else {
+			p.frame = 0;
+			p.stamina += 1;
+			if (p.stamina > 100) p.stamina = 100;
+			if (p.stamina >= 20) p.staminaCooldown = false;
 		}
-		else p.frame = 0;
 		if (p.frame > 3) p.frame = 0;
 
 		if (
@@ -216,7 +235,8 @@ const player = {
 
 		map[p.scene].layers.scenery.forEach((t, i) => {
 			const f = map[p.scene].furnace[i];
-			if (t != 72 || f?.inputId <= 0 || f.cooked > 99 || f.fuelLevel <= 0) return;
+			if (!f) return;
+			if (t != 72 || f?.inputId <= 0 || f?.cooked > 99 || f?.fuelLevel <= 0) return;
 			const x = i % map[p.scene].cols, y = (i - x) / map[p.scene].cols;
 			particles.add(10, {
 				x: x * tsize + Math.random() * tsize,
@@ -644,7 +664,7 @@ const player = {
 		p.b.forEach(v => !itemStats[v.item].stackable ? v.amount = 1 : "");
 
 		if (p.x == p.dx && p.y == p.dy) {
-			if (keys["Shift"] && p.hunger >= 25) p.speed = 8;
+			if (keys["Shift"] && p.hunger >= 25 && p.stamina > 0 && !p.staminaCooldown) p.speed = 8;
 			else p.speed = 5;
 		}
 		if ((keys[controls[p.controls].up] || gp.up()) && p.x == p.dx && p.y == p.dy) { p.dy -= tsize; p.dir = 1 }
@@ -753,6 +773,7 @@ const player = {
 				else if (p.i.some(e => e.item == -1)) p.i[p.i.findIndex(e => e.item == -1)] = { item: i, amount: 1 };
 				else p.b[p.b.findIndex(e => e.item == -1)] = { item: i, amount: 1 };
 			});
+			player.getLvl(blockStats[tile].xp);
 			const prev = itemStats[blockStats[map[p.scene].layers.scenery[getIndex(p.scene, c, r)]].gives[0]].placeId;
 			map[p.scene].layers.scenery[getIndex(p.scene, c, r)] = -1;
 			delete map[p.scene].chest[getIndex(p.scene, c, r)];
@@ -827,4 +848,11 @@ const player = {
 			}
 		}
 	},
+	getLvl(xp = 50) {
+		const p = players[myId];
+		if (!p.xp) p.xp = 0;
+		const l = (Math.floor(p.xp / 100) + 1) / 2;
+		p.xp += Math.round(Math.max(xp / l, 1));
+		p.xp = Math.max(Math.round(p.xp), 0);
+	}
 };

@@ -19,10 +19,16 @@ function loadImages() {
 	images["items"].src = "images/spritesheets/items.png";
 	images["daylight"] = new Image();
 	images["daylight"].src = "images/spritesheets/daylight-cycle.png";
+	images["leaderboard"] = new Image();
+	images["leaderboard"].src = "images/leaderboard.png";
+	images["inventory"] = new Image();
+	images["inventory"].src = "images/inventory.png";
 	images["health"] = new Image();
+	images["health"].src = "images/health.png";
+	images["xp"] = new Image();
+	images["xp"].src = "images/xp.png";
 	images["lighting"] = new Image();
 	images["lighting"].src = "images/lighting.png";
-	images["health"].src = "images/health.png";
 	images["boss"] = new Image();
 	images["boss"].src = "images/spritesheets/bosses.png";
 	images["white head"] = new Image();
