@@ -172,6 +172,29 @@
 	transition: border 0.3s ease, background 0.3s ease, transform 0.3s ease;
 }
 
+#main-menu #delete-room {
+	background: rgb(200, 0, 0);
+	border: none;
+	outline: none;
+	padding: 10px;
+	border-radius: 10px;
+	font-family: pixel;
+	font-size: 20px;
+	letter-spacing: 1px;
+	cursor: pointer;
+	color: white;
+	height: fit-content;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	transition: border 0.3s ease, background 0.3s ease, transform 0.3s ease;
+}
+
+#main-menu #delete-room svg {
+	width: 20px;
+	height: 20px;
+}
+
 #main-menu #private-room {
 	background: rgba(0, 0, 0, 0.8);
 	border: black 2px solid;

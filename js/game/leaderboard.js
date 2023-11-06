@@ -41,7 +41,7 @@ const leaderboard = {
 		lighting.stroke();
 		lighting.closePath();
 		let y2 = y;
-		Object.values(leaderboard.arr).sort((a, b) => a.xp - b.xp).filter((e, i) => i * (lph + margin) < leaderboard.maxH).forEach((e, i) => {
+		Object.values(leaderboard.arr).sort((a, b) => b.xp - a.xp).filter((e, i) => i * (lph + margin) < leaderboard.maxH).forEach((e, i) => {
 			leaderboard.lastHeight = ((i + 1) * (lph + margin)) - margin;
 			const xp = Math.floor(e.xp / 100).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 			lighting.beginPath();

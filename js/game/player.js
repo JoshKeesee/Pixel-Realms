@@ -163,8 +163,20 @@ const player = {
 		}
 		ctx.textAlign = "center";
 		ctx.font = "15px pixel";
-		ctx.fillStyle = p.team || "white";
-		ctx.fillText(p.name, dx + tsize / 2, (p.id != myId && p.health < 100) ? dy - 8 : dy);
+		if (devs[user.name]) {
+			const sp = 12;
+			ctx.beginPath();
+			ctx.fillStyle = p.team || "white";
+			ctx.moveTo(dx + (tsize / 2) - sp, dy - 4);
+			ctx.lineTo(dx + (tsize / 2) + sp, dy - 4);
+			ctx.lineTo(dx + (tsize / 2), dy + 5);
+			ctx.fill();
+			ctx.fillStyle = "white";
+			ctx.fillText(p.name, dx + tsize / 2, (p.id != myId && p.health < 100) ? dy - 16 : dy - 8);
+		} else {
+			ctx.fillStyle = p.team || "white";
+			ctx.fillText(p.name, dx + tsize / 2, (p.id != myId && p.health < 100) ? dy - 8 : dy);
+		}
 	},
 	frames(p) {
 		if (p.id == myId) {

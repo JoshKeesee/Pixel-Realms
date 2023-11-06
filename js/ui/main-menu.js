@@ -66,7 +66,7 @@ const mainMenu = {
 	createButton(text, id, onclick = () => { }, b = true) {
 		const button = document.createElement("button");
 		button.id = id;
-		button.innerText = text;
+		button.innerHTML = text;
 		button.onclick = onclick;
 		if (b) button.className = "button-" + mainMenu.buttons;
 		if (b) button.onmouseover = () => mainMenu.switchButton(0, button.className.replace("button-", ""), false);
@@ -92,7 +92,8 @@ const mainMenu = {
 		document.querySelector(selector + this.curr).style.transform = "translateY(-2px)";
 		if (mainMenu.r && this.curr > 2 && scroll) document.querySelector(selector + this.curr).parentElement.scrollIntoView();
 		else if (mainMenu.r && scroll) mainMenu.roomList.scrollTop = "0px";
-		if (mainMenu.r && this.curr != 0) return document.querySelector(selector + this.curr).style.background = "rgb(0, 200, 0)";
+		const d = document.querySelector(selector + this.curr).id == "delete-room";
+		if (mainMenu.r && this.curr != 0) return document.querySelector(selector + this.curr).style.background = d ? "rgb(250, 0, 0)" : "rgb(0, 200, 0)";
 		document.querySelector(selector + this.curr).style.background = "rgba(0, 0, 100, 0.8)";
 		document.querySelector(selector + this.curr).style.borderColor = "rgb(0, 0, 255)";
 		document.querySelector(selector + this.curr).style.boxShadow = "0 4px 10px rgb(0, 0, 255)";
@@ -123,6 +124,20 @@ const mainMenu = {
 		mainMenu.play(true, id);
 		await waitForConnect();
 		socket.emit("join room", id);
+	},
+	async deleteRoom(id) {
+		if (!id) return;
+		ui.createPopup();
+		const confirm = await ui.confirm("Are you sure you want to delete this room?");
+		if (ui.container) ui.container.remove();
+		if (!confirm) return;
+		const rooms = await mainMenu.getRooms();
+		if (!rooms[id]) return mainMenu.notify("Couldn't find a room with that id.", "red", 5000);
+		if (getUser()) {
+			await waitForConnect();
+			await waitForUser();
+		} else return mainMenu.notify("You must be logged in to delete a room.", "red", 5000);
+		socket.emit("delete room", id, () => mainMenu.showRooms());
 	},
 	async createRoom(options) {
 		if (!getUser() || !options.name || !options) return;
@@ -190,13 +205,19 @@ const mainMenu = {
 			name.innerText = rooms[k].name;
 			const id = document.createElement("div");
 			id.id = "room-id";
-			id.innerHTML = rooms[k].online + " Online - Join Code: " + rooms[k].id + " - " + public + "<br>" + "Creator: " + rooms[k].creator + " - " + rooms[k].size;
+			const teams = rooms[k].teamMap ? " - Game Mode: Teams" : " - Game Mode: Normal";
+			id.innerHTML = rooms[k].online + " Online - Join Code: " + rooms[k].id + " - " + public + "<br>" + "Creator: " + rooms[k].creator + " - " + rooms[k].size + teams;
 			info.appendChild(name);
 			info.appendChild(document.createElement("hr"));
 			info.appendChild(id);
 			r.appendChild(info);
 			const join = mainMenu.createButton("Join", "join-room", () => mainMenu.joinRoom(rooms[k].id));
 			r.appendChild(join);
+			if (rooms[k].creator == user.name || devs[user.name]) r.appendChild(mainMenu.createButton(`
+				<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+					<path fill-rule="evenodd" d="M16.5 4.478v.227a48.816 48.816 0 013.878.512.75.75 0 11-.256 1.478l-.209-.035-1.005 13.07a3 3 0 01-2.991 2.77H8.084a3 3 0 01-2.991-2.77L4.087 6.66l-.209.035a.75.75 0 01-.256-1.478A48.567 48.567 0 017.5 4.705v-.227c0-1.564 1.213-2.9 2.816-2.951a52.662 52.662 0 013.369 0c1.603.051 2.815 1.387 2.815 2.951zm-6.136-1.452a51.196 51.196 0 013.273 0C14.39 3.05 15 3.684 15 4.478v.113a49.488 49.488 0 00-6 0v-.113c0-.794.609-1.428 1.364-1.452zm-.355 5.945a.75.75 0 10-1.5.058l.347 9a.75.75 0 101.499-.058l-.346-9zm5.48.058a.75.75 0 10-1.498-.058l-.347 9a.75.75 0 001.5.058l.345-9z" clip-rule="evenodd" />
+				</svg>
+			`, "delete-room", () => mainMenu.deleteRoom(rooms[k].id)));
 			mainMenu.roomList.appendChild(r);
 		});
 		if (Object.keys(rooms).length == 0) mainMenu.roomList.innerText = "No rooms found...";
