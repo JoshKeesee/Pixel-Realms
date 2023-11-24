@@ -38,6 +38,7 @@ const backpack = {
     item.appendChild(amount);
   },
   toggle() {
+		if (!this.backpack) return;
     keys["x"] = false;
     keys["i"] = false;
     if (camera.setFade == 0) {

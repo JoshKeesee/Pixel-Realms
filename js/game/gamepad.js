@@ -15,7 +15,7 @@ const gp = {
 	up(c) {
 		if (!this.connected) return false;
 		if (c) {
-			const t = this.connected && this.device.axes[1] < -0.5 > 0 && !gp.axes[0];
+			const t = this.device.axes[1] < -0.5 > 0 && !gp.axes[0];
 			gp.axes[0] = this.device.axes[1] < -0.5;
 			return t;
 		}
@@ -24,7 +24,7 @@ const gp = {
 	down(c) {
 		if (!this.connected) return false;
 		if (c) {
-			const t = this.connected && this.device.axes[1] > 0.5 > 0 && !gp.axes[1];
+			const t = this.device.axes[1] > 0.5 > 0 && !gp.axes[1];
 			gp.axes[1] = this.device.axes[1] > 0.5;
 			return t;
 		}
@@ -33,7 +33,7 @@ const gp = {
 	left(c) {
 		if (!this.connected) return false;
 		if (c) {
-			const t = this.connected && this.device.axes[0] < -0.5 > 0 && !gp.axes[2];
+			const t = this.device.axes[0] < -0.5 > 0 && !gp.axes[2];
 			gp.axes[2] = this.device.axes[0] < -0.5;
 			return t;
 		}
@@ -42,7 +42,7 @@ const gp = {
 	right(c) {
 		if (!this.connected) return false;
 		if (c) {
-			const t = this.connected && this.device.axes[0] > 0.5 > 0 && !gp.axes[3];
+			const t = this.device.axes[0] > 0.5 > 0 && !gp.axes[3];
 			gp.axes[3] = this.device.axes[0] > 0.5;
 			return t;
 		}
@@ -52,19 +52,19 @@ const gp = {
 		if (!this.connected) return false;
 		if (c) {
 			if (r) {
-				const t = this.connected && this.device.buttons[7].value < 0.5 && gp.buttons[7];
+				const t = this.device.buttons[7].value < 0.5 && gp.buttons[7];
 				gp.buttons[7] = this.device.buttons[7].value > 0;
 				return t;
 			}
-			const t = this.connected && this.device.buttons[7].value > 0 && !gp.buttons[7];
+			const t = this.device.buttons[7].value > 0 && !gp.buttons[7];
 			gp.buttons[7] = this.device.buttons[7].value > 0;
 			return t;
 		}
-		return this.connected && this.device.buttons[7].value > 0.5;
+		return this.device.buttons[7].value > 0.5;
 	},
 	checkKey(k) {
 		if (!this.connected) return false;
-		const t = this.connected && !this.device.buttons[k]?.pressed && gp.buttons[k];
+		const t = !this.device.buttons[k]?.pressed && gp.buttons[k];
 		gp.buttons[k] = this.device.buttons[k]?.pressed;
 		return t;
 	},
@@ -72,11 +72,11 @@ const gp = {
 	cKey(c = false) {
 		if (!this.connected) return false;
 		if (c) {
-			const t = this.connected && this.device.buttons[6].value > 0 && !gp.buttons[6];
+			const t = this.device.buttons[6].value > 0 && !gp.buttons[6];
 			gp.buttons[6] = this.device.buttons[6].value > 0;
 			return t;
 		}
-		return this.connected && this.device.buttons[6].value > 0.5;
+		return this.device.buttons[6].value > 0.5;
 	},
 	editor() { return this.checkKey(2) },
 	enter(c = false) { return this.checkKey(0) },

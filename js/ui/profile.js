@@ -21,10 +21,11 @@ const profile = {
     i.src = src;
   },
   toggle() {
+		const a = document.querySelector("#profile-account");
+		if (!a) return;
     if (chat.toggled) chat.toggle();
     if (pause.toggled) pause.toggle();
     profile.toggled = !profile.toggled;
-    const a = document.querySelector("#profile-account");
     if (a.style.transform == "scale(1)") a.style.transform = "scale(0)";
     else a.style.transform = "scale(1)";
   },

@@ -36,7 +36,7 @@ async function keyup(e) {
 			mainMenu.privateInput.focus();
 			mainMenu.privateJoin.style = "";
 		}
-		if (e.key == controls[t].right || gp.right(true) && (devs[user.name] || (admins[user.id] && online))) {
+		if ((e.key == controls[t].right || gp.right(true)) && (devs[user.name] || (admins[user.id] && online))) {
 			if (document.activeElement == mainMenu.privateInput || typeof user.id != "number") mainMenu.switchButton(0, "1");
 			else mainMenu.switchButton(0, "2");
 		}

@@ -94,6 +94,8 @@ const game = {
 	},
 	animate() {
 		requestAnimationFrame(game.animate);
+
+		if (gp.connected) gp.updateGamepad();
 	
 		const t = performance.now();
 		if (t - startFPS < 1000 / FPS) return;
@@ -122,7 +124,6 @@ const game = {
 			game.furnace();
 		}
 	
-		if (gp.connected) gp.updateGamepad();
 		if (!map || !map[players[myId]?.scene] || !readyToAnimate) return;
 	
 		ctx.canvas.width = window.innerWidth;

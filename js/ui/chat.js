@@ -196,6 +196,7 @@ const chat = {
     if (!chat.toggled) chat.ping.style.display = "block";
   },
   toggle() {
+		if (!chat.ping) return;
     if ((!online && !devs[user.name]) || players[myId].editor) return;
     if (profile.toggled) profile.toggle();
 		if (pause.toggled) pause.toggle();
