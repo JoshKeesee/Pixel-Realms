@@ -1,149 +1,230 @@
-const serverUrl = window.location == "https://pixel-realms-dev.pixel-realms.repl.co/" ? "https://pixel-realms-dev-server.pixel-realms.repl.co/" : "https://pixel-realms-server.joshkeesee.repl.co/";
-const socket = typeof io != "undefined" ? io(serverUrl, {
-	autoConnect: false,
-	forceNew: true,
-	reconnection: false,
-}) : "";
+const serverUrl = "https://sdgp5w-3000.csb.app/";
+const socket =
+  typeof io != "undefined"
+    ? io(serverUrl, {
+        autoConnect: false,
+        forceNew: true,
+        reconnection: false,
+      })
+    : "";
 const FPS = 60;
 let admins = {};
-const devs = { "JoshKeesee": true, "Phanghost": true };
+const devs = { JoshKeesee: true, Phanghost: true };
 Object.freeze(devs);
 let myId = "offline";
 let players = {};
 let buffer = {};
 let map = [];
 const user = { id: null };
-let online = false, banned = false;
-const dontCollide = [-1, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 54, 55, 56, 178, 179, 180, 78, 79, 80, 81, 82, 83, 102, 103, 104, 105, 106, 107, 136, 137, 138, 139, 140, 141, 172, 173, 174, 175, 176, 177, 192, 193, 194, 195, 196, 197, 198, 199, 200, 201, 205, 209, 213];
+let online = false,
+  banned = false;
+const dontCollide = [
+  -1, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 54, 55, 56, 178, 179, 180, 78,
+  79, 80, 81, 82, 83, 102, 103, 104, 105, 106, 107, 136, 137, 138, 139, 140,
+  141, 172, 173, 174, 175, 176, 177, 192, 193, 194, 195, 196, 197, 198, 199,
+  200, 201, 205, 209, 213,
+];
 
 const VERSION = "1.0.2";
 
 async function loadDefault() {
-	map = updateMap(JSON.parse(defaultMap));
-	players[myId] = JSON.parse(defaultPlayer);
-	const u = getUser();
-	if (u) await loginUser(u);
+  map = updateMap(JSON.parse(defaultMap));
+  players[myId] = JSON.parse(defaultPlayer);
+  const u = getUser();
+  if (u) await loginUser(u);
 }
 
 loadDefault();
 
 if (socket) {
-	socket.on("user", p => {
-		players[myId] = p;
-		players[myId].id = socket.id;
-	});
-	socket.on("give item", ([it, amount]) => {
-		const item = Object.keys(itemStats).find(e => itemStats[e] == Object.values(itemStats).find(({ name }) => name.toLowerCase().replace(" ", "_") == it)) || Number(it);
-		if (!item) return;
-		const p = players[myId];
-		for (let i = 0; i < amount; i++) {
-			if (p.i.some(e => e.amount < maxItems && itemStats[e.item].stackable && e.item == item)) p.i[p.i.findIndex(e => e.amount < maxItems && itemStats[e.item].stackable && e.item == item)].amount++;
-			else if (p.b.some(e => e.amount < maxItems && itemStats[e.item].stackable && e.item == item)) p.b[p.b.findIndex(e => e.amount < maxItems && itemStats[e.item].stackable && e.item == item)].amount++;
-			else if (p.i.some(e => e.item == -1)) p.i[p.i.findIndex(e => e.item == -1)] = { item, amount: 1 };
-			else if (p.b.some(e => e.item == -1)) p.b[p.b.findIndex(e => e.item == -1)] = { item, amount: 1 };
-			player.getLvl(itemStats[item].xp);
-		}
+  socket.on("user", (p) => {
+    players[myId] = p;
+    players[myId].id = socket.id;
+  });
+  socket.on("give item", ([it, amount]) => {
+    const item =
+      Object.keys(itemStats).find(
+        (e) =>
+          itemStats[e] ==
+          Object.values(itemStats).find(
+            ({ name }) => name.toLowerCase().replace(" ", "_") == it,
+          ),
+      ) || Number(it);
+    if (!item) return;
+    const p = players[myId];
+    for (let i = 0; i < amount; i++) {
+      if (
+        p.i.some(
+          (e) =>
+            e.amount < maxItems &&
+            itemStats[e.item].stackable &&
+            e.item == item,
+        )
+      )
+        p.i[
+          p.i.findIndex(
+            (e) =>
+              e.amount < maxItems &&
+              itemStats[e.item].stackable &&
+              e.item == item,
+          )
+        ].amount++;
+      else if (
+        p.b.some(
+          (e) =>
+            e.amount < maxItems &&
+            itemStats[e.item].stackable &&
+            e.item == item,
+        )
+      )
+        p.b[
+          p.b.findIndex(
+            (e) =>
+              e.amount < maxItems &&
+              itemStats[e.item].stackable &&
+              e.item == item,
+          )
+        ].amount++;
+      else if (p.i.some((e) => e.item == -1))
+        p.i[p.i.findIndex((e) => e.item == -1)] = { item, amount: 1 };
+      else if (p.b.some((e) => e.item == -1))
+        p.b[p.b.findIndex((e) => e.item == -1)] = { item, amount: 1 };
+      player.getLvl(itemStats[item].xp);
+    }
 
-		if (socket.connected && online) socket.emit("update player", players[myId]);
-	});
-	socket.on("clear inventory", () => players[myId].i = players[myId].i.map(e => "-1"));
-	socket.on("clear backpack", () => players[myId].b = players[myId].b.map(e => "-1"));
-	socket.on("kick", () => socket.disconnect());
-	socket.on("tp", ([x, y, scene]) => {
-		players[myId].dx = players[myId].x = x * tsize;
-		players[myId].dy = players[myId].y = y * tsize;
-		players[myId].scene = scene;
+    if (socket.connected && online) socket.emit("update player", players[myId]);
+  });
+  socket.on(
+    "clear inventory",
+    () => (players[myId].i = players[myId].i.map((e) => "-1")),
+  );
+  socket.on(
+    "clear backpack",
+    () => (players[myId].b = players[myId].b.map((e) => "-1")),
+  );
+  socket.on("kick", () => socket.disconnect());
+  socket.on("tp", ([x, y, scene]) => {
+    players[myId].dx = players[myId].x = x * tsize;
+    players[myId].dy = players[myId].y = y * tsize;
+    players[myId].scene = scene;
 
-		if (socket.connected && online) socket.emit("update player", players[myId]);
-	});
-	socket.on("init map", m => map = m);
-	socket.on("init leaderboard", l => leaderboard.arr = l);
-	socket.on("update leaderboard", u => leaderboard.arr[u.id] = u);
-	socket.on("init entities", entities => entities.forEach((e, i) => map[i].entities = e));
-	socket.on("update map", d => {
-		map[d[1]] = d[0];
-		if (chest.i == -1) return;
-		chest.update(map[players[myId].scene].chest[chest.i], false);
-	});
-	socket.on("update break", d => map[d[1]].break[d[2]] = d[0]);
-	socket.on("update chest", d => map[d[1]].chest[d[2]] = d[0]);
-	socket.on("update furnace", d => {
-		map[d[1]].furnace[d[2]] = d[0];
-		furnace.updateData();
-	});
-	socket.on("delete map", s => map.splice(s, 1));
-	socket.on("update daylight", data => daylight.level = data);
-	socket.on("init players", data => {
-		players = data;
-		myId = socket.id;
-		buffer = {};
-		Object.keys(players).forEach(k => buffer[k] = { x: players[k].x, y: players[k].y, health: players[k].health });
-		if (players[myId].bed) player.toggleBed(players[myId]);
-		if (typeof players[myId].minecart == "number") player.toggleMinecart(players[myId], map[players[myId].scene].entities[players[myId].minecart]);
-		players[myId].dx = Math.floor(players[myId].x / tsize) * tsize;
-		players[myId].dy = Math.floor(players[myId].y / tsize) * tsize;
-	});
-	socket.on("update player", changes => {
-		if (!changes) return;
-		const p = players[changes.id];
-		if (!p) {
-			players[changes.id] = changes;
-			buffer[changes.id] = { x: changes.x, y: changes.y, health: changes.health, };
-		}
-		else Object.keys(changes).forEach(k => p[k] = changes[k]);
-	});
-	socket.on("update entity", data => {
-		let e = map[data[2]].entities[data[1]];
-		const changes = data[0];
-		if (!e) e = changes;
-		else Object.keys(changes).forEach(k => e[k] = changes[k]);
-	});
-	socket.on("remove entity", data => map[data[1]].entities.splice(data[0], 1));
-	socket.on("remove player", id => { delete players[id]; delete buffer[id] });
-	socket.on("chat message", chat.receive);
-	socket.on("disconnect", () => online ? mainMenu.create("Disconnected from server.") : "");
-	socket.on("update admins", a => admins = a);
-	socket.on("kill", () => players[myId].health = -100);
+    if (socket.connected && online) socket.emit("update player", players[myId]);
+  });
+  socket.on("init map", (m) => (map = m));
+  socket.on("init leaderboard", (l) => (leaderboard.arr = l));
+  socket.on("update leaderboard", (u) => (leaderboard.arr[u.id] = u));
+  socket.on("init entities", (entities) =>
+    entities.forEach((e, i) => (map[i].entities = e)),
+  );
+  socket.on("update map", (d) => {
+    map[d[1]] = d[0];
+    if (chest.i == -1) return;
+    chest.update(map[players[myId].scene].chest[chest.i], false);
+  });
+  socket.on("update break", (d) => (map[d[1]].break[d[2]] = d[0]));
+  socket.on("update chest", (d) => (map[d[1]].chest[d[2]] = d[0]));
+  socket.on("update furnace", (d) => {
+    map[d[1]].furnace[d[2]] = d[0];
+    furnace.updateData();
+  });
+  socket.on("delete map", (s) => map.splice(s, 1));
+  socket.on("update daylight", (data) => (daylight.level = data));
+  socket.on("init players", (data) => {
+    players = data;
+    myId = socket.id;
+    buffer = {};
+    Object.keys(players).forEach(
+      (k) =>
+        (buffer[k] = {
+          x: players[k].x,
+          y: players[k].y,
+          health: players[k].health,
+        }),
+    );
+    if (players[myId].bed) player.toggleBed(players[myId]);
+    if (typeof players[myId].minecart == "number")
+      player.toggleMinecart(
+        players[myId],
+        map[players[myId].scene].entities[players[myId].minecart],
+      );
+    players[myId].dx = Math.floor(players[myId].x / tsize) * tsize;
+    players[myId].dy = Math.floor(players[myId].y / tsize) * tsize;
+  });
+  socket.on("update player", (changes) => {
+    if (!changes) return;
+    const p = players[changes.id];
+    if (!p) {
+      players[changes.id] = changes;
+      buffer[changes.id] = {
+        x: changes.x,
+        y: changes.y,
+        health: changes.health,
+      };
+    } else Object.keys(changes).forEach((k) => (p[k] = changes[k]));
+  });
+  socket.on("update entity", (data) => {
+    let e = map[data[2]].entities[data[1]];
+    const changes = data[0];
+    if (!e) e = changes;
+    else Object.keys(changes).forEach((k) => (e[k] = changes[k]));
+  });
+  socket.on("remove entity", (data) =>
+    map[data[1]].entities.splice(data[0], 1),
+  );
+  socket.on("remove player", (id) => {
+    delete players[id];
+    delete buffer[id];
+  });
+  socket.on("chat message", chat.receive);
+  socket.on("disconnect", () =>
+    online ? mainMenu.create("Disconnected from server.") : "",
+  );
+  socket.on("update admins", (a) => (admins = a));
+  socket.on("kill", () => (players[myId].health = -100));
 }
 
 function updateMap(m) {
-	m.forEach((s, i) => {
-		if (!m[i].break) m[i].break = {};
-		if (!m[i].structure) m[i].structure = {};
-		if (!m[i].text) m[i].text = {};
-		if (!m[i].chest) m[i].chest = {};
-		if (!m[i].furnace) m[i].furnace = {};
-		if (!m[i].teleport) m[i].teleport = {};
-		if (!m[i].entities) m[i].entities = [];
-		s.entities.forEach((e, int) => !e ? s.entities.splice(int, 1) : "");
-		s.layers.scenery.forEach((t, int) => {
-			if (t == 65 && !s.chest[int]) s.chest[int] = [-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1];
-			if (t == 72 && !s.furnace[int]) s.furnace[int] = {};
-		});
-	});
-	return m;
+  m.forEach((s, i) => {
+    if (!m[i].break) m[i].break = {};
+    if (!m[i].structure) m[i].structure = {};
+    if (!m[i].text) m[i].text = {};
+    if (!m[i].chest) m[i].chest = {};
+    if (!m[i].furnace) m[i].furnace = {};
+    if (!m[i].teleport) m[i].teleport = {};
+    if (!m[i].entities) m[i].entities = [];
+    s.entities.forEach((e, int) => (!e ? s.entities.splice(int, 1) : ""));
+    s.layers.scenery.forEach((t, int) => {
+      if (t == 65 && !s.chest[int])
+        s.chest[int] = [
+          -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+          -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+        ];
+      if (t == 72 && !s.furnace[int]) s.furnace[int] = {};
+    });
+  });
+  return m;
 }
 
 function connect() {
-	if (socket.connected || !online || mainMenu.cancel) return;
-	socket.connect();
-	setTimeout(connect, 10000);
+  if (socket.connected || !online || mainMenu.cancel) return;
+  socket.connect();
+  setTimeout(connect, 10000);
 }
 
 function waitForConnect() {
-	if (socket) connect();
-	return new Promise(res => {
-		if (socket.connected || !socket) res(true);
-		else socket.on("connect", () => res(mainMenu.cancelLoad));
-	});
+  if (socket) connect();
+  return new Promise((res) => {
+    if (socket.connected || !socket) res(true);
+    else socket.on("connect", () => res(mainMenu.cancelLoad));
+  });
 }
 
 function waitForVersion() {
-	if (!socket.connected) connect();
-	return new Promise(res => socket.emit("version", v => res(v)));
+  if (!socket.connected) connect();
+  return new Promise((res) => socket.emit("version", (v) => res(v)));
 }
 
 function checkBan(id) {
-	if (socket) connect();
-	return new Promise(res => socket.emit("check ban", id, res));
+  if (socket) connect();
+  return new Promise((res) => socket.emit("check ban", id, res));
 }
