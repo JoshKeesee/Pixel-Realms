@@ -1,4 +1,4 @@
-const serverUrl = "https://sdgp5w-3000.csb.app/";
+const serverUrl = "https://hj8m26-3000.csb.app/";
 const socket =
   typeof io != "undefined"
     ? io(serverUrl, {

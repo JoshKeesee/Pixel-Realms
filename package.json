@@ -5,6 +5,7 @@
   "description": "An online RPG game where you can connect with friends and battle monsters to take back the kingdom of Pixel Realms!",
   "main": "main.js",
   "scripts": {
+    "server": "http-server . -c-1 -s",
     "start": "electron .",
     "make": "electron-builder -mwl",
     "make-win": "electron-builder -w",
@@ -57,6 +58,7 @@
     "electron-builder": "^24.13.3"
   },
   "dependencies": {
-    "electron-updater": "^6.1.4"
+    "electron-updater": "^6.1.4",
+    "http-server": "^14.1.1"
   }
 }
