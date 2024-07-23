@@ -58,7 +58,7 @@
     "electron-builder": "^24.13.3"
   },
   "dependencies": {
-    "electron-updater": "^6.1.4",
+    "electron-updater": "^6.3.0",
     "http-server": "^14.1.1"
   }
 }
