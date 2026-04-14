@@ -54,7 +54,7 @@
   },
   "homepage": "https://github.com/JoshKeesee/Pixel Realms#readme",
   "devDependencies": {
-    "electron": "^25.8.4",
+    "electron": "^35.7.5",
     "electron-builder": "^26.7.0"
   },
   "dependencies": {
